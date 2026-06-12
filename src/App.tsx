@@ -258,6 +258,41 @@ export default function App() {
     setErrorString("");
   };
 
+  const handleDownloadPDF = () => {
+    if (!result) return;
+    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `analisis-cultural-${destination || "general"}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleShare = async () => {
+    if (!result) return;
+    const shareUrl = window.location.origin + window.location.pathname + "#share=" + encodeURIComponent(btoa(unescape(encodeURIComponent(result))));
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      alert("✅ Link de resultado copiado al portapapeles. Compartilo con quien quieras.");
+    } catch {
+      // fallback
+      prompt("Copiá este link para compartir el resultado:", shareUrl);
+    }
+  };
+
+  // Detect shared result on page load
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith("#share=")) {
+      try {
+        const raw = hash.slice(7);
+        const text = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
+        setResult(text);
+      } catch {}
+    }
+  }, []);
+
   // Helper: resalta texto en **bold** con un color configurable
   const parseBoldText = (text: string, highlightClass = "bg-[#dae122]/30") => {
     const parts = text.split(/(\*\*.*?\*\*)/g);
@@ -761,7 +796,7 @@ export default function App() {
                 </div>
 
                 <div className="pt-4 border-t border-neutral-200 flex flex-wrap justify-between items-center gap-3 print:hidden">
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <button
                       id="copy-btn"
                       onClick={handleCopyToClipboard}
@@ -783,6 +818,20 @@ export default function App() {
                       className="px-4 py-2 bg-[#dae122] text-neutral-950 border border-neutral-900 text-[10px] font-mono font-bold hover:bg-[#dae122]/85 flex items-center gap-1.5"
                     >
                       <Printer className="w-3" /> IMPRIMIR REPORTE
+                    </button>
+                    <button
+                      id="download-btn"
+                      onClick={handleDownloadPDF}
+                      className="px-4 py-2 bg-white text-neutral-950 border border-neutral-900 text-[10px] font-mono font-bold hover:bg-neutral-50 flex items-center gap-1.5"
+                    >
+                      <FileText className="w-3 h-3" /> DESCARGAR TXT
+                    </button>
+                    <button
+                      id="share-btn"
+                      onClick={handleShare}
+                      className="px-4 py-2 bg-neutral-950 text-[#dae122] border border-neutral-900 text-[10px] font-mono font-bold hover:bg-neutral-800 flex items-center gap-1.5"
+                    >
+                      <Send className="w-3 h-3" /> COMPARTIR
                     </button>
                   </div>
 
