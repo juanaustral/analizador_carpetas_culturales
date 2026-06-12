@@ -214,6 +214,9 @@ Sos un Asistente de Evaluación de Proyectos Culturales Independientes en Argent
 # REGLA CRUCIAL
 NO reescribas ni corrijas el texto original del artista. Tu función es auditar y dar feedback.
 
+# REGLA DE FORMATO ESTRICTA
+NO agregues ningún saludo, introducción, mensaje personalizado ni texto de apertura. Arrancá DIRECTAMENTE con la primera sección "### 🌟 Puntos Fuertes de la Propuesta". NADA antes de eso.
+
 # ESTRUCTURA OBLIGATORIA DE LA RESPUESTA
 Devolvé el análisis usando exactamente esta estructura de títulos:
 
@@ -243,7 +246,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
           },
         },
         {
-          text: `Por favor auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}. Seguir estrictamente las instrucciones de rol, tono de Argentina ("vos"), límites de tokens y estructura obligatoria.`,
+          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
         },
       ],
       config: {
