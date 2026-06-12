@@ -431,7 +431,7 @@ export default function App() {
               <div className="space-y-2">
                 <label className="block text-[11px] font-bold text-neutral-500 font-mono flex items-center justify-between uppercase tracking-widest">
                   <span>[ 01 ] CARGAR CARPETA ÚNICA</span>
-                  <span className="text-[10px] font-bold text-red-650 font-mono">* REQUERIDO</span>
+                  <span className="text-[10px] font-bold text-red-600 font-mono">* REQUERIDO</span>
                 </label>
                 
                 <div 
@@ -484,7 +484,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={handleRemoveFile}
-                          className="px-3 py-2 text-[10px] font-mono font-bold bg-red-105 bg-red-100 text-red-900 hover:bg-red-200 border border-neutral-900 flex items-center gap-1.5"
+                          className="px-3 py-2 text-[10px] font-mono font-bold bg-red-100 text-red-900 hover:bg-red-200 border border-neutral-900 flex items-center gap-1.5"
                         >
                           <X className="w-3.5 h-3.5" /> REMOVER
                         </button>
@@ -548,7 +548,7 @@ export default function App() {
                           <span className={`text-[9px] px-2 py-0.5 rounded-none font-mono font-bold border ${
                             isSelected 
                               ? "bg-[#dae122] text-neutral-950 border-neutral-950" 
-                              : "bg-neutral-100 text-neutral-500 border-neutral-250"
+                              : "bg-neutral-100 text-neutral-500 border-neutral-200"
                           }`}>
                             {dest.org}
                           </span>
@@ -583,7 +583,7 @@ export default function App() {
             {/* Error Message display */}
             {errorString && (
               <div id="error-banner" className="p-4 bg-red-100 border border-red-500 rounded-none text-neutral-950 text-xs flex items-start gap-3">
-                <AlertCircle className="w-4 h-4 shrink-0 text-red-650 mt-0.5" />
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
                 <p className="leading-relaxed font-mono font-bold">{errorString}</p>
               </div>
             )}
@@ -651,7 +651,7 @@ export default function App() {
               </h3>
               {/* Dynamic pedagogy lines shown during request */}
               <div className="min-h-[56px] px-4 flex items-center justify-center bg-neutral-50 rounded-none border border-neutral-200 p-3.5">
-                <p className="text-neutral-850 text-xs italic transition-all duration-300 leading-relaxed font-bold text-neutral-800">
+                <p className="text-xs italic transition-all duration-300 leading-relaxed font-bold text-neutral-800">
                   "{LOADING_PHRASES[loadingPhraseIndex]}"
                 </p>
               </div>
@@ -730,9 +730,9 @@ export default function App() {
                   <button
                     id="reset-btn"
                     onClick={handleReset}
-                    className="px-4 py-2 bg-neutral-950 text-[#dae122] text-[10px] font-mono font-bold tracking-wider hover:bg-neutral-800 flex items-center gap-1.5"
+                    className="group px-4 py-2 bg-neutral-950 text-[#dae122] text-[10px] font-mono font-bold tracking-wider hover:bg-neutral-800 flex items-center gap-1.5"
                   >
-                    <RefreshCw className="w-3 h-3 animate-spin-hover" /> AUDITAR OTRO
+                    <RefreshCw className="w-3 h-3 group-hover:animate-spin" /> AUDITAR OTRO
                   </button>
                 </div>
               </div>
@@ -844,7 +844,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-neutral-50 p-4 border-t border-neutral-250 flex justify-end">
+              <div className="bg-neutral-50 p-4 border-t border-neutral-200 flex justify-end">
                 <button
                   type="button"
                   onClick={() => setActivePriorityDetail(null)}
@@ -941,7 +941,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="bg-neutral-50 p-4 border-t border-neutral-250 flex justify-end">
+              <div className="bg-neutral-50 p-4 border-t border-neutral-200 flex justify-end">
                 <button
                   type="button"
                   onClick={() => setShowCriteriaModal(false)}
@@ -974,7 +974,7 @@ export default function App() {
         </div>
 
         {/* Instructive transparent disclaimer notice added as requested */}
-        <div className="max-w-3xl mx-auto text-[10px] text-neutral-450 font-mono font-semibold leading-relaxed border-t border-neutral-200 pt-4.5">
+        <div className="max-w-3xl mx-auto text-[10px] text-neutral-500 font-mono font-semibold leading-relaxed border-t border-neutral-200 pt-4.5">
           ESTE DIAGNÓSTICO ESTÁ CONSTRUIDO BAJO RECOPILACIÓN REGLAMENTARIA AUTÓNOMA Y NO TIENE VINCULACIÓN OFICIAL NI RESPALDO DIRECTO DE LAS MENCIONADAS ENTIDADES PÚBLICAS.
         </div>
       </footer>

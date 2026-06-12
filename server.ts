@@ -12,7 +12,7 @@ import { createServer as createViteServer } from "vite";
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Increase body limit to handle PDF base64 uploads safely
 app.use(express.json({ limit: "50mb" }));
@@ -118,7 +118,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
 `;
 
     const response = await generateContentWithRetry(ai, {
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: [
         {
           inlineData: {
@@ -133,7 +133,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
       config: {
         systemInstruction,
         temperature: 0.2,
-        maxOutputTokens: 800,
+        maxOutputTokens: 4096,
       },
     });
 
