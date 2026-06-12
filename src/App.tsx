@@ -539,7 +539,7 @@ export default function App() {
           
           <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
             <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
-              VERSION 1.6
+              VERSION 1.7
             </span>
             <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
               {totalVisits || 0} VISITAS
@@ -1344,7 +1344,7 @@ export default function App() {
         </div>
 
         <div className="max-w-3xl mx-auto pt-1 text-[9px] text-neutral-400 font-mono font-medium">
-          Desarrollado por <a href="https://www.juanmartinezgarcia.com" target="_blank" rel="noopener noreferrer" className="font-bold text-neutral-950 hover:underline">Juan Martinez Garcia</a>
+          Una herramienta para <span className="font-bold text-neutral-700">artistas</span>, creada por un <span className="font-bold text-neutral-700">artista</span> — <a href="https://www.juanmartinezgarcia.com" target="_blank" rel="noopener noreferrer" className="font-bold text-neutral-950 hover:underline">Juan Martinez Garcia</a>
         </div>
       </footer>
     </div>
