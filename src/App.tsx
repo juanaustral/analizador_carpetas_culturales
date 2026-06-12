@@ -509,13 +509,19 @@ export default function App() {
       <header className="border-b border-neutral-900 bg-white py-5 px-4 sm:px-6 md:px-8 sticky top-0 z-30 print:hidden shadow-xs">
         <div id="header-inner" className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 bg-[#dae122] border border-neutral-900 rounded-none inline-block"></span>
-              <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-neutral-500">PROYECTO INDEPENDIENTE // 2026</span>
-            </div>
-            <h1 className="text-xl md:text-2xl font-display font-black text-neutral-950 tracking-tight">
-              ANALIZADOR DE CARPETAS CULTURALES
-            </h1>
+            <div className="flex items-center gap-3">
+              <img 
+                src="/assets/logo.png" 
+                alt="Analizador de Carpetas Culturales" 
+                className="w-8 h-8 md:w-10 md:h-10 object-contain border border-neutral-900"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+              />
+              <div>
+                <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-neutral-500">PROYECTO INDEPENDIENTE // 2026</span>
+                <h1 className="text-xl md:text-2xl font-display font-black text-neutral-950 tracking-tight">
+                  ANALIZADOR DE CARPETAS CULTURALES
+                </h1>
+              </div>
             <p className="text-xs text-neutral-500 font-mono">
               CREADO POR{" "}
               <a 
