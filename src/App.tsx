@@ -102,11 +102,19 @@ export default function App() {
 
   // --- Quota (límite de API) ---
   const [quota, setQuota] = useState<{ usedToday: number; limitPerDay: number; remaining: number; visits: number } | null>(null);
+  const [totalVisits, setTotalVisits] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/status")
       .then((r) => r.json())
       .then(setQuota)
+      .catch(() => {});
+    // Visit counter via CountAPI (persistente)
+    fetch("https://api.countapi.xyz/hit/juanaustral/analizador-cultural")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.value) setTotalVisits(d.value);
+      })
       .catch(() => {});
   }, []);
 
@@ -497,9 +505,9 @@ export default function App() {
             <span className="px-3.5 py-1.5 bg-[#dae122] border border-neutral-900 text-neutral-950 rounded-none text-[10px] font-mono font-bold tracking-wider flex items-center gap-1.5">
               VERSION 1.2
             </span>
-            {quota && (
+            {totalVisits && (
               <span className="px-2 py-1 bg-white border border-neutral-300 text-neutral-500 rounded-none text-[8px] font-mono font-bold tracking-wider">
-                {quota.visits} VISITAS
+                {totalVisits} VISITAS
               </span>
             )}
           </div>
@@ -1246,33 +1254,15 @@ export default function App() {
 
       {/* Footer Area */}
       <footer className="border-t border-neutral-900 bg-white py-6 px-4 md:px-8 text-center text-neutral-700 text-xs print:hidden space-y-3">
-        {/* Quota Meter */}
-        {quota && (
-          <div className="max-w-4xl mx-auto flex items-center gap-3 pb-3 border-b border-neutral-100">
-            <div className="flex-1">
-              <div className="flex justify-between text-[9px] font-mono font-bold text-neutral-500 mb-1 tracking-wider">
-                <span>LÍMITE DIARIO DE LA API</span>
-                <span>{quota.usedToday} / {quota.limitPerDay} usados</span>
-              </div>
-              <div className="w-full h-1.5 bg-neutral-200 rounded-none overflow-hidden">
-                <div
-                  className={`h-full transition-all duration-500 ${
-                    quota.remaining < 100 ? "bg-red-500" : quota.remaining < 500 ? "bg-[#dae122]" : "bg-green-500"
-                  }`}
-                  style={{ width: `${Math.min(100, (quota.usedToday / quota.limitPerDay) * 100)}%` }}
-                />
-              </div>
-              <p className="text-[8px] text-neutral-400 font-mono mt-0.5 text-left">
-                {quota.remaining > 0
-                  ? `Quedan aprox. ${quota.remaining} análisis disponibles hoy. Se resetea a medianoche.`
-                  : "⚠️ Límite diario alcanzado. Volvé mañana."}
-              </p>
-              <p className="text-[7px] text-neutral-300 font-mono mt-0.5 text-left italic">
-                * El límite es orientativo. La herramienta usa la API gratuita de Gemini (1.500 req/día). Si ves un error de límite, esperá unos minutos y reintentá.
-              </p>
-            </div>
+        {/* Límite de uso - informativo */}
+        <div className="max-w-4xl mx-auto pb-3 border-b border-neutral-100">
+          <div className="bg-neutral-50 border border-neutral-200 p-3 rounded-none">
+            <p className="text-[9px] font-mono font-bold text-neutral-600 tracking-wider uppercase mb-1">⚠️ Límite de uso</p>
+            <p className="text-[10px] font-mono text-neutral-500 leading-relaxed">
+              Esta herramienta usa la API gratuita de Gemini que tiene un límite de 1.500 análisis por día. Si al cargar un archivo ves un mensaje de error de límite, esperá unos minutos y volvé a intentar.
+            </p>
           </div>
-        )}
+        </div>
 
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <p className="font-mono font-bold text-neutral-900 text-left uppercase tracking-tighter text-[11px] leading-relaxed">
