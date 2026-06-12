@@ -6,12 +6,27 @@
 - Index.html: meta description, keywords, Open Graph tags, Twitter Card, canonical URL
 - JSON-LD structured data (WebApplication schema)
 - Favicon emoji SVG
+- og:image con logo del proyecto para compartir en redes
 - Endpoint `/robots.txt` con sitemap reference
 - Endpoint `/sitemap.xml` con URL principal
 
+### Logo
+- Logo agregado al header junto al título
+- Logo disponible como `/og-image.png` para SEO y redes
+- Express ahora sirve directorio `public/` para archivos estáticos
+
+### Respuestas más detalladas
+- Eliminada restricción "Sé directo y ve al grano"
+- Nuevas instrucciones: "Sé detallado y exhaustivo, mientras más análisis mejor"
+- Citá fragmentos textuales del PDF para respaldar observaciones
+- Items ilimitados en cada sección (antes máximo 3)
+- Diagnóstico detallado (antes "máximo 4 líneas")
+- Sugerencias sin límite de cantidad
+- `maxOutputTokens`: 4.096 → 8.192
+
 ### Correcciones
-- Contador de visitas: migrado de countapi.xyz (caido) a countapi.mileshilliard.com
-- Contador ahora es persistente y funcional
+- Contador de visitas: migrado de countapi.xyz (caído) a countapi.mileshilliard.com
+- Corregido bug de div faltante en header JSX
 
 ---
 
