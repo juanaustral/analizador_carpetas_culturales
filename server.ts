@@ -5,14 +5,43 @@
 
 import express, { Request, Response } from "express";
 import path from "path";
+import fs from "fs";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
+import nodemailer from "nodemailer";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const DAILY_LIMIT = 1500;
+
+// --- Quota tracker (file-based, persiste en Render single-instance) ---
+const QUOTA_FILE = path.join(process.cwd(), "quota.json");
+
+function getQuota(): { date: string; count: number; limit: number } {
+  try {
+    const raw = fs.readFileSync(QUOTA_FILE, "utf-8");
+    const data = JSON.parse(raw);
+    const today = new Date().toISOString().slice(0, 10);
+    if (data.date === today) return data;
+  } catch {}
+  return { date: new Date().toISOString().slice(0, 10), count: 0, limit: DAILY_LIMIT };
+}
+
+function saveQuota(quota: { date: string; count: number; limit: number }) {
+  try { fs.writeFileSync(QUOTA_FILE, JSON.stringify(quota)); } catch {}
+}
+
+function incrementQuota() {
+  const q = getQuota();
+  q.count++;
+  saveQuota(q);
+  return q;
+}
+
+// ---
 
 // Increase body limit to handle PDF base64 uploads safely
 app.use(express.json({ limit: "50mb" }));
@@ -56,6 +85,73 @@ async function generateContentWithRetry(aiClient: GoogleGenAI, callParams: any, 
     }
   }
 }
+
+// API Status — quota info
+app.get("/api/status", (_req: Request, res: Response) => {
+  const quota = getQuota();
+  res.json({
+    usedToday: quota.count,
+    limitPerDay: quota.limit,
+    remaining: Math.max(0, quota.limit - quota.count),
+    resetsAt: "00:00 UTC (medianoche)",
+  });
+});
+
+// API Feedback — recibe comentarios de los usuarios
+const FEEDBACK_FILE = path.join(process.cwd(), "feedback.json");
+
+function saveFeedback(data: { name: string; email: string; message: string; date: string }) {
+  try {
+    const existing = fs.existsSync(FEEDBACK_FILE)
+      ? JSON.parse(fs.readFileSync(FEEDBACK_FILE, "utf-8"))
+      : [];
+    existing.push(data);
+    fs.writeFileSync(FEEDBACK_FILE, JSON.stringify(existing, null, 2));
+  } catch (e) {
+    console.error("Error guardando feedback:", e);
+  }
+}
+
+async function tryEmailFeedback(data: { name: string; email: string; message: string }) {
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const feedbackEmail = process.env.FEEDBACK_EMAIL;
+  if (!smtpHost || !smtpUser || !smtpPass || !feedbackEmail) return false;
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: parseInt(process.env.SMTP_PORT || "587"),
+      secure: process.env.SMTP_SECURE === "true",
+      auth: { user: smtpUser, pass: smtpPass },
+    });
+    await transporter.sendMail({
+      from: smtpUser,
+      to: feedbackEmail,
+      subject: `[Feedback Analizador] ${data.name}`,
+      text: `Nombre: ${data.name}\nEmail: ${data.email}\n\nMensaje:\n${data.message}`,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+app.post("/api/feedback", async (req: Request, res: Response) => {
+  try {
+    const { name, email, message } = req.body as { name?: string; email?: string; message?: string };
+    if (!name || !message) {
+      return res.status(400).json({ error: "Faltan nombre o mensaje" });
+    }
+    const data = { name, email: email || "(no especificado)", message, date: new Date().toISOString() };
+    saveFeedback(data);
+    const emailed = await tryEmailFeedback(data);
+    res.json({ ok: true, emailed });
+  } catch (err) {
+    console.error("Error en /api/feedback:", err);
+    res.status(500).json({ error: "Error interno" });
+  }
+});
 
 // API Endpoint to evaluate cultural folders
 app.post("/api/evaluate", async (req: Request, res: Response) => {
@@ -138,6 +234,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
     });
 
     const text = response.text || "No se ha podido generar una devolución adecuada para esta carpeta. Intenta de nuevo.";
+    incrementQuota();
     res.json({ text });
   } catch (err: any) {
     console.error("Error al procesar evaluación:", err);

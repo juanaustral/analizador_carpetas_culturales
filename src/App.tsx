@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   FileText, 
@@ -20,7 +20,10 @@ import {
   Eye,
   ShieldCheck,
   HelpCircle,
-  FileCheck
+  FileCheck,
+  MessageCircle,
+  Send,
+  Mail
 } from "lucide-react";
 
 type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "";
@@ -96,6 +99,42 @@ export default function App() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // --- Quota (límite de API) ---
+  const [quota, setQuota] = useState<{ usedToday: number; limitPerDay: number; remaining: number } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/status")
+      .then((r) => r.json())
+      .then(setQuota)
+      .catch(() => {});
+  }, []);
+
+  // --- Feedback ---
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackName, setFeedbackName] = useState("");
+  const [feedbackEmail, setFeedbackEmail] = useState("");
+  const [feedbackMsg, setFeedbackMsg] = useState("");
+  const [captcha, setCaptcha] = useState({ a: 0, b: 0, answer: "" });
+  const [feedbackSending, setFeedbackSending] = useState(false);
+  const [feedbackSent, setFeedbackSent] = useState(false);
+  const [feedbackError, setFeedbackError] = useState("");
+
+  const generateCaptcha = () => ({
+    a: Math.floor(Math.random() * 10) + 1,
+    b: Math.floor(Math.random() * 10) + 1,
+    answer: "",
+  });
+
+  const openFeedback = () => {
+    setCaptcha(generateCaptcha());
+    setFeedbackName("");
+    setFeedbackEmail("");
+    setFeedbackMsg("");
+    setFeedbackSent(false);
+    setFeedbackError("");
+    setShowFeedbackModal(true);
+  };
 
   // Convert PDF to base64 safely
   const handleFileChange = (selectedFile: File) => {
@@ -219,13 +258,13 @@ export default function App() {
     setErrorString("");
   };
 
-  // Helper inside client to render parsed structured blocks elegantly
-  const parseBoldText = (text: string) => {
+  // Helper: resalta texto en **bold** con un color configurable
+  const parseBoldText = (text: string, highlightClass = "bg-[#dae122]/30") => {
     const parts = text.split(/(\*\*.*?\*\*)/g);
     return parts.map((part, index) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <span key={index} className="font-extrabold text-neutral-950 bg-[#dae122]/30 px-1 py-0.5 text-xs font-mono border-b border-neutral-900">
+          <span key={index} className={`font-extrabold text-neutral-950 ${highlightClass} px-1 py-0.5 text-xs font-mono border-b border-neutral-900`}>
             {part.slice(2, -2)}
           </span>
         );
@@ -240,6 +279,15 @@ export default function App() {
     let inList = false;
     let listType: "bullet" | "numbered" | null = null;
     let currentListItems: React.ReactNode[] = [];
+    let currentSection: "strengths" | "weaknesses" | "suggestions" | "default" = "default";
+
+    // Colors por tipo de sección
+    const sectionColors = {
+      strengths: { highlight: "bg-[#dae122]/30", bullet: "bg-[#dae122]", bulletText: "text-neutral-950" },
+      weaknesses: { highlight: "bg-red-200/50", bullet: "bg-red-500", bulletText: "text-white" },
+      suggestions: { highlight: "bg-green-200/50", bullet: "bg-green-600", bulletText: "text-white" },
+      default:   { highlight: "bg-[#dae122]/30", bullet: "bg-[#dae122]", bulletText: "text-neutral-950" },
+    };
 
     const flushList = () => {
       if (currentListItems.length > 0) {
@@ -274,23 +322,28 @@ export default function App() {
         let sectionLabel = "Criterio Técnico";
         let cardStyle = "border-neutral-900 bg-neutral-50 text-neutral-900";
         let borderStyle = "border-l-4 border-l-neutral-900";
+        currentSection = "default";
 
         if (line.includes("🌟") || line.includes("Puntos Fuertes")) {
           sectionLabel = "Fortalezas Detectadas";
           cardStyle = "bg-[#dae122]/10 border-neutral-950 gap-2";
           borderStyle = "border-l-4 border-l-[#dae122]";
+          currentSection = "strengths";
         } else if (line.includes("🔍") || line.includes("Diagnóstico")) {
           sectionLabel = "Inspección de Vacíos / Gaps";
           cardStyle = "bg-neutral-50 border-neutral-300";
           borderStyle = "border-l-4 border-l-neutral-400";
+          currentSection = "default";
         } else if (line.includes("⚠️") || line.includes("Puntos Débiles")) {
           sectionLabel = "Riesgos Potenciales";
           cardStyle = "bg-red-50/40 border-red-900/20";
           borderStyle = "border-l-4 border-l-red-500";
+          currentSection = "weaknesses";
         } else if (line.includes("💡") || line.includes("Sugerencias")) {
           sectionLabel = "Acciones de Optimización";
-          cardStyle = "bg-neutral-50 border-neutral-900";
-          borderStyle = "border-l-4 border-l-neutral-950";
+          cardStyle = "bg-green-50/40 border-green-900/20";
+          borderStyle = "border-l-4 border-l-green-600";
+          currentSection = "suggestions";
         }
 
         const cleanTitle = line.replace(/###\s*/, "").replace(/[🌟🔍⚠️💡]\s*/g, "");
@@ -312,11 +365,12 @@ export default function App() {
           listType = "bullet";
         }
         const rawContent = line.substring(2).trim();
+        const colors = sectionColors[currentSection];
         
         currentListItems.push(
           <li key={`li-${i}`} className="flex items-start gap-3 bg-white p-4.5 border border-neutral-200 hover:border-neutral-900 transition-colors duration-150">
-            <span className="w-1.5 h-1.5 bg-[#dae122] border border-neutral-900 shrink-0 mt-2 rounded-none"></span>
-            <span className="text-xs md:text-sm leading-relaxed text-neutral-800 font-medium">{parseBoldText(rawContent)}</span>
+            <span className={`w-1.5 h-1.5 ${colors.bullet} border border-neutral-900 shrink-0 mt-2 rounded-none`}></span>
+            <span className="text-xs md:text-sm leading-relaxed text-neutral-800 font-medium">{parseBoldText(rawContent, colors.highlight)}</span>
           </li>
         );
       } else if (/^\d+\.\s+/.test(line)) {
@@ -328,19 +382,21 @@ export default function App() {
         const match = line.match(/^(\d+)\.\s+(.*)/);
         const num = match ? match[1] : i.toString();
         const rawContent = match ? match[2] : line;
+        const colors = sectionColors[currentSection];
+        
         currentListItems.push(
           <li key={`li-${i}`} className="flex items-start gap-4 bg-white p-4.5 border border-neutral-200 hover:border-neutral-900 transition-colors duration-150">
-            <span className="flex items-center justify-center font-mono text-[9px] font-bold bg-[#dae122] text-neutral-950 border border-neutral-900 w-5 h-5 shrink-0 select-none">
+            <span className={`flex items-center justify-center font-mono text-[9px] font-bold ${colors.bullet} ${colors.bulletText} border border-neutral-900 w-5 h-5 shrink-0 select-none`}>
               {num}
             </span>
-            <span className="text-xs md:text-sm leading-relaxed text-neutral-800 font-medium">{parseBoldText(rawContent)}</span>
+            <span className="text-xs md:text-sm leading-relaxed text-neutral-800 font-medium">{parseBoldText(rawContent, colors.highlight)}</span>
           </li>
         );
       } else {
         flushList();
         renderList.push(
           <p key={`p-${i}`} className="text-neutral-800 text-xs md:text-sm my-4 leading-relaxed pl-1 font-medium">
-            {parseBoldText(line)}
+            {parseBoldText(line, sectionColors[currentSection].highlight)}
           </p>
         );
       }
@@ -379,7 +435,7 @@ export default function App() {
           
           <div className="flex items-center gap-2 pt-1 sm:pt-0">
             <span className="px-3.5 py-1.5 bg-[#dae122] border border-neutral-900 text-neutral-950 rounded-none text-[10px] font-mono font-bold tracking-wider flex items-center gap-1.5">
-              VERSION 1.0
+              VERSION 1.1
             </span>
           </div>
         </div>
@@ -407,9 +463,14 @@ export default function App() {
                 <h2 className="text-xl md:text-2xl font-display font-black text-neutral-950 tracking-tight uppercase">
                   Pre-evaluación para Artistas, Investigadores y Gestores Culturales
                 </h2>
-                <p className="text-neutral-700 text-sm leading-relaxed max-w-3xl font-medium">
-                  Herramienta de diagnóstico autónomo de carpetas para las convocatorias del FNA, INT y Ministerio de Cultura. Examiná la congruencia técnica, solidez presupuestal, delimitación territorial y los desgloses operativos obligatorios antes de enviar oficialmente tu postulación.
-                </p>
+                <div className="space-y-3">
+                  <p className="text-neutral-700 text-sm leading-relaxed max-w-3xl font-medium border-l-4 border-[#dae122] pl-4 py-1 bg-[#dae122]/5">
+                    <span className="font-extrabold text-neutral-950">¿Qué es?</span> Herramienta de diagnóstico autónomo de carpetas para las convocatorias del <strong>FNA</strong>, <strong>INT</strong> y <strong>Ministerio de Cultura</strong>.
+                  </p>
+                  <p className="text-neutral-700 text-sm leading-relaxed max-w-3xl font-medium">
+                    <span className="font-extrabold text-neutral-950">¿Cómo usarla?</span> Cargá tu PDF, seleccioná el organismo y recibí una devolución sobre la congruencia técnica, solidez presupuestal, delimitación territorial y desgloses operativos obligatorios <strong>antes</strong> de enviar tu postulación oficial.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -524,16 +585,14 @@ export default function App() {
                     return (
                       <div
                         key={dest.id}
-                        className={`w-full p-4 rounded-none border transition-all duration-200 relative bg-white flex flex-col gap-2 ${
+                        onClick={() => setDestination(dest.id)}
+                        className={`w-full p-4 rounded-none border transition-all duration-200 relative bg-white flex flex-col gap-2 cursor-pointer ${
                           isSelected 
                             ? "border-neutral-900 bg-neutral-50 ring-1 ring-neutral-900" 
                             : "border-neutral-200 hover:border-neutral-900"
                         }`}
                       >
-                        <div 
-                          className="flex items-center justify-between w-full cursor-pointer"
-                          onClick={() => setDestination(dest.id)}
-                        >
+                        <div className="flex items-center justify-between w-full">
                           <div className="flex items-center gap-2.5">
                             <span className={`w-3.5 h-3.5 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
                               isSelected ? "bg-neutral-950" : "bg-white"
@@ -955,13 +1014,196 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Feedback Modal */}
+      <AnimatePresence>
+        {showFeedbackModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-xs"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white w-full max-w-lg rounded-none border border-neutral-900 flex flex-col shadow-lg"
+            >
+              <div className="bg-neutral-950 border-b border-neutral-900 p-4 text-[#dae122] flex justify-between items-center">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 bg-[#dae122] shrink-0"></span>
+                  <h3 className="font-mono font-bold text-xs uppercase tracking-widest text-[#dae122]">
+                    ENVIAR COMENTARIOS Y SUGERENCIAS
+                  </h3>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setShowFeedbackModal(false)}
+                  className="text-neutral-400 hover:text-white transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {feedbackSent ? (
+                <div className="p-8 text-center space-y-4">
+                  <CheckCircle className="w-12 h-12 text-green-600 mx-auto" />
+                  <p className="text-neutral-950 font-bold text-sm font-mono">¡MENSAJE ENVIADO!</p>
+                  <p className="text-neutral-500 text-xs font-mono">Gracias por tu feedback. Lo voy a leer apenas pueda.</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowFeedbackModal(false)}
+                    className="px-4 py-2 bg-neutral-950 text-white hover:bg-neutral-800 text-[10px] font-mono tracking-wider font-bold"
+                  >
+                    CERRAR
+                  </button>
+                </div>
+              ) : (
+                <form
+                  className="p-6 space-y-4"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    const captchaOk = parseInt(captcha.answer) === captcha.a + captcha.b;
+                    if (!captchaOk) {
+                      setFeedbackError("La respuesta del captcha es incorrecta. Probá de nuevo.");
+                      setCaptcha(generateCaptcha());
+                      return;
+                    }
+                    setFeedbackSending(true);
+                    setFeedbackError("");
+                    try {
+                      const r = await fetch("/api/feedback", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name: feedbackName, email: feedbackEmail, message: feedbackMsg }),
+                      });
+                      if (!r.ok) throw new Error("Error del servidor");
+                      setFeedbackSent(true);
+                    } catch {
+                      setFeedbackError("No se pudo enviar el mensaje. Intentalo de nuevo más tarde.");
+                    } finally {
+                      setFeedbackSending(false);
+                    }
+                  }}
+                >
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">Nombre</label>
+                    <input
+                      type="text"
+                      required
+                      value={feedbackName}
+                      onChange={(e) => setFeedbackName(e.target.value)}
+                      className="w-full border border-neutral-300 p-2.5 text-xs font-mono focus:outline-none focus:border-neutral-900 bg-white"
+                      placeholder="Tu nombre"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">Email (opcional)</label>
+                    <input
+                      type="email"
+                      value={feedbackEmail}
+                      onChange={(e) => setFeedbackEmail(e.target.value)}
+                      className="w-full border border-neutral-300 p-2.5 text-xs font-mono focus:outline-none focus:border-neutral-900 bg-white"
+                      placeholder="tu@email.com"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">Mensaje *</label>
+                    <textarea
+                      required
+                      rows={4}
+                      value={feedbackMsg}
+                      onChange={(e) => setFeedbackMsg(e.target.value)}
+                      className="w-full border border-neutral-300 p-2.5 text-xs font-mono focus:outline-none focus:border-neutral-900 bg-white resize-none"
+                      placeholder="Contame qué mejorarías, qué te gustó, o qué bug encontraste..."
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">¿Cuánto es {captcha.a} + {captcha.b}? *</label>
+                    <input
+                      type="number"
+                      required
+                      value={captcha.answer}
+                      onChange={(e) => setCaptcha({ ...captcha, answer: e.target.value })}
+                      className="w-full border border-neutral-300 p-2.5 text-xs font-mono focus:outline-none focus:border-neutral-900 bg-white"
+                      placeholder="Escribí el resultado"
+                    />
+                  </div>
+
+                  {feedbackError && (
+                    <div className="p-3 bg-red-100 border border-red-400 text-red-800 text-[10px] font-mono font-bold">
+                      {feedbackError}
+                    </div>
+                  )}
+
+                  <div className="flex justify-end gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowFeedbackModal(false)}
+                      className="px-4 py-2 bg-white text-neutral-950 border border-neutral-900 text-[10px] font-mono font-bold hover:bg-neutral-50"
+                    >
+                      CANCELAR
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={feedbackSending}
+                      className="px-4 py-2 bg-neutral-950 text-white hover:bg-neutral-800 text-[10px] font-mono tracking-wider font-bold flex items-center gap-1.5 disabled:opacity-50"
+                    >
+                      {feedbackSending ? (
+                        <><RefreshCw className="w-3 h-3 animate-spin" /> ENVIANDO...</>
+                      ) : (
+                        <><Send className="w-3 h-3" /> ENVIAR MENSAJE</>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Footer Area */}
-      <footer className="border-t border-neutral-900 bg-white py-8 px-4 md:px-8 text-center text-neutral-700 text-xs print:hidden space-y-4">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <footer className="border-t border-neutral-900 bg-white py-6 px-4 md:px-8 text-center text-neutral-700 text-xs print:hidden space-y-3">
+        {/* Quota Meter */}
+        {quota && (
+          <div className="max-w-4xl mx-auto flex items-center gap-3 pb-3 border-b border-neutral-100">
+            <div className="flex-1">
+              <div className="flex justify-between text-[9px] font-mono font-bold text-neutral-500 mb-1 tracking-wider">
+                <span>LÍMITE DIARIO DE LA API</span>
+                <span>{quota.usedToday} / {quota.limitPerDay} usados</span>
+              </div>
+              <div className="w-full h-1.5 bg-neutral-200 rounded-none overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 ${
+                    quota.remaining < 100 ? "bg-red-500" : quota.remaining < 500 ? "bg-[#dae122]" : "bg-green-500"
+                  }`}
+                  style={{ width: `${Math.min(100, (quota.usedToday / quota.limitPerDay) * 100)}%` }}
+                />
+              </div>
+              <p className="text-[8px] text-neutral-400 font-mono mt-0.5 text-left">
+                {quota.remaining > 0
+                  ? `Quedan ${quota.remaining} análisis disponibles hoy. Se resetea a ${quota.resetsAt}.`
+                  : "⚠️ Límite diario alcanzado. Volvé mañana o contactame para alternativas."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <p className="font-mono font-bold text-neutral-900 text-left uppercase tracking-tighter text-[11px] leading-relaxed">
             © 2026 ANALIZADOR DE CARPETAS CULTURALES • 
           </p>
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={openFeedback}
+              className="text-neutral-950 font-mono font-bold hover:bg-[#dae122] border border-neutral-950 px-3 py-1.5 transition-colors text-[10px] flex items-center gap-1.5"
+            >
+              <MessageCircle className="w-3 h-3" /> ENVIAR COMENTARIOS
+            </button>
             <a 
               href="https://www.juanmartinezgarcia.com" 
               target="_blank" 
@@ -973,8 +1215,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Instructive transparent disclaimer notice added as requested */}
-        <div className="max-w-3xl mx-auto text-[10px] text-neutral-500 font-mono font-semibold leading-relaxed border-t border-neutral-200 pt-4.5">
+        <div className="max-w-3xl mx-auto text-[10px] text-neutral-500 font-mono font-semibold leading-relaxed border-t border-neutral-200 pt-3">
           ESTE DIAGNÓSTICO ESTÁ CONSTRUIDO BAJO RECOPILACIÓN REGLAMENTARIA AUTÓNOMA Y NO TIENE VINCULACIÓN OFICIAL NI RESPALDO DIRECTO DE LAS MENCIONADAS ENTIDADES PÚBLICAS.
         </div>
       </footer>
