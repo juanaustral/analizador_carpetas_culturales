@@ -273,13 +273,40 @@ export default function App() {
 
   const handleCopyToClipboard = () => {
     if (!result) return;
-    navigator.clipboard.writeText(result);
+    const attribution = "\n\n---\nDesarrollado por Juan Martinez Garcia — https://www.juanmartinezgarcia.com";
+    navigator.clipboard.writeText(result + attribution);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPDF = () => {
+    if (!result) return;
+    const attribution = "\n\n---\nDesarrollado por Juan Martinez Garcia — https://www.juanmartinezgarcia.com";
+    const styledHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Análisis Cultural</title><style>
+      body{font-family:Georgia,serif;max-width:700px;margin:2cm auto;padding:0 20px;color:#111;line-height:1.6;font-size:13px}
+      h2{font-size:16px;margin-top:28px;border-left:4px solid #333;padding-left:12px}
+      ul,ol{padding-left:20px} li{margin:6px 0}
+      .attr{margin-top:40px;padding-top:12px;border-top:1px solid #ccc;font-size:11px;color:#666}
+    </style></head><body>
+    <h1 style="font-size:20px;margin-bottom:4px">Analizador de Carpetas Culturales</h1>
+    <p style="font-size:12px;color:#666;margin-bottom:24px">Diagnóstico automático — ${destination || "Sin destino"}</p>
+    ${result.split('\n').map(l => {
+      if (l.startsWith('###')) return `<h2>${l.replace(/###\s*/, '')}</h2>`;
+      if (l.startsWith('- ')) return `<li>${l.slice(2)}</li>`;
+      if (/^\d+\.\s+/.test(l)) return `<li>${l.replace(/^\d+\.\s+/, '')}</li>`;
+      if (!l.trim()) return '';
+      return `<p>${l}</p>`;
+    }).join('\n')}
+    <div class="attr">${attribution.replace(/\n/g, '<br>')}</div>
+    </body></html>`;
+    
+    const win = window.open('', '_blank');
+    if (win) {
+      win.document.write(styledHtml);
+      win.document.close();
+      win.focus();
+      setTimeout(() => { win.print(); }, 500);
+    }
   };
 
   const handleReset = () => {
@@ -291,7 +318,7 @@ export default function App() {
     setErrorString("");
   };
 
-  const handleDownloadPDF = () => {
+  const handleDownloadTXT = () => {
     if (!result) return;
     const attribution = "\n\n---\nDesarrollado por Juan Martinez Garcia — https://www.juanmartinezgarcia.com";
     const blob = new Blob([result + attribution], { type: "text/plain;charset=utf-8" });
@@ -353,9 +380,9 @@ export default function App() {
 
     // Colors por tipo de sección
     const sectionColors = {
-      strengths: { highlight: "bg-[#dae122]/30", bullet: "bg-[#dae122]", bulletText: "text-neutral-950" },
+      strengths: { highlight: "bg-green-200/50", bullet: "bg-green-600", bulletText: "text-white" },
       weaknesses: { highlight: "bg-red-200/50", bullet: "bg-red-500", bulletText: "text-white" },
-      suggestions: { highlight: "bg-green-200/50", bullet: "bg-green-600", bulletText: "text-white" },
+      suggestions: { highlight: "bg-[#dae122]/30", bullet: "bg-[#dae122]", bulletText: "text-neutral-950" },
       default:   { highlight: "bg-[#dae122]/30", bullet: "bg-[#dae122]", bulletText: "text-neutral-950" },
     };
 
@@ -396,8 +423,8 @@ export default function App() {
 
         if (line.includes("🌟") || line.includes("Puntos Fuertes")) {
           sectionLabel = "Fortalezas Detectadas";
-          cardStyle = "bg-[#dae122]/10 border-neutral-950 gap-2";
-          borderStyle = "border-l-4 border-l-[#dae122]";
+          cardStyle = "bg-green-50/40 border-green-900/20";
+          borderStyle = "border-l-4 border-l-green-600";
           currentSection = "strengths";
         } else if (line.includes("🔍") || line.includes("Diagnóstico")) {
           sectionLabel = "Inspección de Vacíos / Gaps";
@@ -411,8 +438,8 @@ export default function App() {
           currentSection = "weaknesses";
         } else if (line.includes("💡") || line.includes("Sugerencias")) {
           sectionLabel = "Acciones de Optimización";
-          cardStyle = "bg-green-50/40 border-green-900/20";
-          borderStyle = "border-l-4 border-l-green-600";
+          cardStyle = "bg-[#dae122]/10 border-neutral-950";
+          borderStyle = "border-l-4 border-l-[#dae122]";
           currentSection = "suggestions";
         }
 
@@ -790,7 +817,7 @@ export default function App() {
             </div>
             
             <div className="pt-2 text-[10px] text-neutral-400 font-mono font-bold uppercase tracking-widest">
-              SISTEMA DE ANÁLISIS GEMINI • CONV. FEDERALES
+              SISTEMA DE ANÁLISIS PARA CONVOCATORIAS ARGENTINAS
             </div>
           </motion.div>
         )}
@@ -852,14 +879,14 @@ export default function App() {
                     </button>
                     <button
                       id="print-btn"
-                      onClick={handlePrint}
+                      onClick={handleDownloadPDF}
                       className="px-4 py-2 bg-[#dae122] text-neutral-950 border border-neutral-900 text-[10px] font-mono font-bold hover:bg-[#dae122]/85 flex items-center gap-1.5"
                     >
-                      <Printer className="w-3" /> IMPRIMIR REPORTE
+                      <Printer className="w-3" /> DESCARGAR EN PDF
                     </button>
                     <button
                       id="download-btn"
-                      onClick={handleDownloadPDF}
+                      onClick={handleDownloadTXT}
                       className="px-4 py-2 bg-white text-neutral-950 border border-neutral-900 text-[10px] font-mono font-bold hover:bg-neutral-50 flex items-center gap-1.5"
                     >
                       <FileText className="w-3 h-3" /> DESCARGAR TXT
@@ -892,11 +919,11 @@ export default function App() {
                 </span>
                 <p className="text-sm md:text-base font-sans font-medium text-neutral-800 mt-2 leading-relaxed">
                   Encontré{" "}
-                  <span className="font-extrabold text-neutral-950 bg-[#dae122]/30 px-1 py-0.5 border-b border-neutral-900">{resultCounts.strengths} puntos fuertes</span>
+                  <span className="font-extrabold text-neutral-950 bg-green-200/50 px-1 py-0.5 border-b border-neutral-900">{resultCounts.strengths} puntos fuertes</span>
                   {", "}
                   <span className="font-extrabold text-neutral-950 bg-red-200/50 px-1 py-0.5 border-b border-neutral-900">{resultCounts.weaknesses} puntos débiles</span>
                   {" y "}
-                  <span className="font-extrabold text-neutral-950 bg-green-200/50 px-1 py-0.5 border-b border-neutral-900">{resultCounts.suggestions} sugerencias</span>
+                  <span className="font-extrabold text-neutral-950 bg-[#dae122]/30 px-1 py-0.5 border-b border-neutral-900">{resultCounts.suggestions} sugerencias</span>
                   {" "}para mejorar tu propuesta.
                 </p>
               </div>
@@ -1306,7 +1333,7 @@ export default function App() {
         </div>
 
         <div className="max-w-3xl mx-auto text-[10px] text-neutral-500 font-mono font-semibold leading-relaxed border-t border-neutral-200 pt-3">
-          ESTE DIAGNÓSTICO ESTÁ CONSTRUIDO BAJO RECOPILACIÓN REGLAMENTARIA AUTÓNOMA Y NO TIENE VINCULACIÓN OFICIAL NI RESPALDO DIRECTO DE LAS MENCIONADAS ENTIDADES PÚBLICAS.
+          ESTE DIAGNÓSTICO ESTÁ CONSTRUIDO BAJO RECOPILACIÓN DE DATOS PUBLICOS DE LAS ENTIDADES Y NO TIENE VINCULACIÓN OFICIAL NI RESPALDO DIRECTO DE LAS MENCIONADAS ENTIDADES PÚBLICAS.
         </div>
 
         <div className="max-w-3xl mx-auto pt-1 text-[9px] text-neutral-400 font-mono font-medium">
