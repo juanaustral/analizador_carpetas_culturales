@@ -511,9 +511,9 @@ export default function App() {
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <img 
-                src="/assets/logo.png" 
+                src="/logo.png" 
                 alt="Analizador de Carpetas Culturales" 
-                className="w-8 h-8 md:w-10 md:h-10 object-contain border border-neutral-900"
+                className="w-8 h-8 md:w-10 md:h-10 object-contain bg-white border border-neutral-900 p-0.5"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               <div>
@@ -539,7 +539,7 @@ export default function App() {
           
           <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
             <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
-              VERSION 1.4
+              VERSION 1.5
             </span>
             <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
               {totalVisits || 0} VISITAS

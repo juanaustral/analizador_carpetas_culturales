@@ -10,10 +10,11 @@
 - Endpoint `/robots.txt` con sitemap reference
 - Endpoint `/sitemap.xml` con URL principal
 
-### Logo
-- Logo agregado al header junto al título
-- Logo disponible como `/og-image.png` para SEO y redes
-- Express ahora sirve directorio `public/` para archivos estáticos
+### Logo e imágenes
+- Logo de carpeta con nodos en el header (fondo blanco con borde para visibilidad)
+- Favicon ahora usa el logo PNG en vez de emoji SVG
+- og:image actualizada con imagen grupal de colaboración para redes sociales
+- Logo y assets movidos a `public/` para que sirvan en producción
 
 ### Respuestas más detalladas
 - Eliminada restricción "Sé directo y ve al grano"
