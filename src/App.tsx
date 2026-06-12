@@ -522,6 +522,7 @@ export default function App() {
                   ANALIZADOR DE CARPETAS CULTURALES
                 </h1>
               </div>
+            </div>
             <p className="text-xs text-neutral-500 font-mono">
               CREADO POR{" "}
               <a 
