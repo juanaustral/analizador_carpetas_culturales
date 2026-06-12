@@ -89,6 +89,7 @@ export default function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState<number>(0);
   const [result, setResult] = useState<string>("");
+  const [resultCounts, setResultCounts] = useState<{ strengths: number; weaknesses: number; suggestions: number } | null>(null);
   const [errorString, setErrorString] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -245,8 +246,8 @@ export default function App() {
       }
 
       const counts = countSections(data.text);
-      const intro = `### 📊 Resumen del Análisis\nEncontré **${counts.strengths} puntos fuertes**, **${counts.weaknesses} puntos débiles** y tengo **${counts.suggestions} sugerencias** para mejorar tu propuesta.\n\n`;
-      setResult(intro + data.text);
+      setResultCounts(counts);
+      setResult(data.text);
     } catch (err: any) {
       setErrorString(err.message || "No pudimos conectarnos con el servidor. Chequeá tu conexión en un rato.");
     } finally {
@@ -283,6 +284,7 @@ export default function App() {
 
   const handleReset = () => {
     setResult("");
+    setResultCounts(null);
     setFile(null);
     setPdfBase64("");
     setDestination("");
@@ -881,6 +883,24 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            {/* Diagnostic evaluation intro with colored counts */}
+            {resultCounts && (
+              <div className="bg-white rounded-none border border-[#dae122] border-l-4 border-l-[#dae122] p-5 md:p-6 relative print:border-none">
+                <span className="text-[10px] tracking-widest font-mono font-bold uppercase text-neutral-500">
+                  📊 RESUMEN DEL ANÁLISIS
+                </span>
+                <p className="text-sm md:text-base font-sans font-medium text-neutral-800 mt-2 leading-relaxed">
+                  Encontré{" "}
+                  <span className="font-extrabold text-neutral-950 bg-[#dae122]/30 px-1 py-0.5 border-b border-neutral-900">{resultCounts.strengths} puntos fuertes</span>
+                  {", "}
+                  <span className="font-extrabold text-neutral-950 bg-red-200/50 px-1 py-0.5 border-b border-neutral-900">{resultCounts.weaknesses} puntos débiles</span>
+                  {" y "}
+                  <span className="font-extrabold text-neutral-950 bg-green-200/50 px-1 py-0.5 border-b border-neutral-900">{resultCounts.suggestions} sugerencias</span>
+                  {" "}para mejorar tu propuesta.
+                </p>
+              </div>
+            )}
 
             {/* Diagnostic evaluation result blocks processed from Markdown */}
             <div className="bg-white rounded-none border border-neutral-900 p-6 md:p-8 relative print:border-none print:p-0">
