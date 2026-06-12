@@ -532,7 +532,7 @@ export default function App() {
           
           <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
             <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
-              VERSION 1.2
+              VERSION 1.3
             </span>
             <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
               {totalVisits || 0} VISITAS

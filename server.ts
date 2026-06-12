@@ -120,6 +120,27 @@ app.get("/api/status", (_req: Request, res: Response) => {
 // API Feedback — recibe comentarios de los usuarios
 const FEEDBACK_FILE = path.join(process.cwd(), "feedback.json");
 
+// --- SEO endpoints ---
+app.get("/robots.txt", (_req: Request, res: Response) => {
+  res.type("text/plain").send(`User-agent: *
+Allow: /
+Sitemap: https://analizador-carpetas-culturales.onrender.com/sitemap.xml
+`);
+});
+
+app.get("/sitemap.xml", (_req: Request, res: Response) => {
+  res.type("application/xml").send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://analizador-carpetas-culturales.onrender.com/</loc>
+    <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+`);
+});
+
 function saveFeedback(data: { name: string; email: string; message: string; date: string }) {
   try {
     const existing = fs.existsSync(FEEDBACK_FILE)
