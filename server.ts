@@ -41,6 +41,12 @@ function incrementQuota() {
   return q;
 }
 
+function setQuotaExhausted() {
+  const q = getQuota();
+  q.count = q.limit; // marca como agotado
+  saveQuota(q);
+}
+
 const VISITS_FILE = path.join(process.cwd(), "visits.json");
 
 function getVisits(): number {
@@ -107,7 +113,6 @@ app.get("/api/status", (_req: Request, res: Response) => {
     usedToday: quota.count,
     limitPerDay: quota.limit,
     remaining: Math.max(0, quota.limit - quota.count),
-    resetsAt: "00:00 UTC (medianoche)",
     visits,
   });
 });
@@ -258,6 +263,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
     if (errString.includes("503") || errString.toLowerCase().includes("unavailable") || errString.toLowerCase().includes("high demand")) {
       userFriendlyError = "Los servidores de IA están con mucha demanda en este momento (Error 503). Por favor, respirá hondo, esperá unos segundos y volvé a intentar iniciar la auditoría.";
     } else if (errString.includes("429") || errString.toLowerCase().includes("quota")) {
+      setQuotaExhausted();
       userFriendlyError = "Alcanzamos el límite temporal de consultas a la IA (Error 429). Aguantanos unos segundos y reintentá.";
     }
     res.status(500).json({ error: userFriendlyError });

@@ -207,6 +207,12 @@ export default function App() {
   const handleEvaluate = async () => {
     if (!pdfBase64 || !destination) return;
 
+    // Check if quota is exhausted
+    if (quota && quota.remaining <= 0) {
+      setErrorString("⚠️ El límite diario de la herramienta se agotó. Probá de nuevo más tarde o volvé mañana. Si creés que es un error, intentá de nuevo en un rato.");
+      return;
+    }
+
     setLoading(true);
     setErrorString("");
     setResult("");
@@ -1258,8 +1264,11 @@ export default function App() {
               </div>
               <p className="text-[8px] text-neutral-400 font-mono mt-0.5 text-left">
                 {quota.remaining > 0
-                  ? `Quedan ${quota.remaining} análisis disponibles hoy. Se resetea a ${quota.resetsAt}.`
-                  : "⚠️ Límite diario alcanzado. Volvé mañana o contactame para alternativas."}
+                  ? `Quedan aprox. ${quota.remaining} análisis disponibles hoy. Se resetea a medianoche.`
+                  : "⚠️ Límite diario alcanzado. Volvé mañana."}
+              </p>
+              <p className="text-[7px] text-neutral-300 font-mono mt-0.5 text-left italic">
+                * El límite es orientativo. La herramienta usa la API gratuita de Gemini (1.500 req/día). Si ves un error de límite, esperá unos minutos y reintentá.
               </p>
             </div>
           </div>
