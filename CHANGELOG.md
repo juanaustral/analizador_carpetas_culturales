@@ -31,6 +31,25 @@
 
 ---
 
+## [1.6] — 2026-06-12
+
+### Ajustes de respuestas
+- Punto medio entre respuestas cortas y ultra detalladas
+- `maxOutputTokens`: 8.192 → 4.096
+- Prompt: "calidad sobre cantidad, mejor 3 puntos bien explicados que 10 superficiales"
+- Items por sección: entre 2 y 5 (antes ilimitados)
+- Diagnóstico: 3 a 5 líneas (antes párrafo detallado sin límite)
+
+### Interfaz
+- Footer: texto de límite de uso simplificado (sin mencionar Gemini ni 1.500)
+- Bold text en resultados: ya no tiene borde inferior ni padding, fluye inline sin parecer recuadro separado
+
+### Infraestructura
+- Keep-alive GitHub Actions: ahora 24/7 (antes solo 6-23 UTC)
+- Redirect de hPanel restaurado (`juanmartinezgarcia.com/analizador` → Render)
+
+---
+
 ## [1.2] — 2026-06-12
 
 ### Colores en resultados

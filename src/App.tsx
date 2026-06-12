@@ -361,7 +361,7 @@ export default function App() {
     return parts.map((part, index) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <span key={index} className={`font-extrabold text-neutral-950 ${highlightClass} px-1 py-0.5 text-xs font-mono border-b border-neutral-900`}>
+          <span key={index} className={`font-extrabold text-neutral-950 ${highlightClass} px-0.5`}>
             {part.slice(2, -2)}
           </span>
         );
@@ -539,7 +539,7 @@ export default function App() {
           
           <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
             <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
-              VERSION 1.5
+              VERSION 1.6
             </span>
             <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
               {totalVisits || 0} VISITAS
@@ -1311,7 +1311,7 @@ export default function App() {
           <div className="bg-neutral-50 border border-neutral-200 p-3 rounded-none">
             <p className="text-[9px] font-mono font-bold text-neutral-600 tracking-wider uppercase mb-1">⚠️ Límite de uso</p>
             <p className="text-[10px] font-mono text-neutral-500 leading-relaxed">
-              Esta herramienta usa la API gratuita de Gemini que tiene un límite de 1.500 análisis por día. Si al cargar un archivo ves un mensaje de error de límite, esperá unos minutos y volvé a intentar.
+              Esta herramienta es totalmente gratuita y por ello tiene un límite de análisis por día. Si al cargar un archivo ves un mensaje de error de límite, esperá y volvé a intentar.
             </p>
           </div>
         </div>
