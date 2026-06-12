@@ -501,15 +501,13 @@ export default function App() {
             </p>
           </div>
           
-          <div className="flex items-center gap-2 pt-1 sm:pt-0">
-            <span className="px-3.5 py-1.5 bg-[#dae122] border border-neutral-900 text-neutral-950 rounded-none text-[10px] font-mono font-bold tracking-wider flex items-center gap-1.5">
+          <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
+            <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
               VERSION 1.2
             </span>
-            {totalVisits && (
-              <span className="px-2 py-1 bg-white border border-neutral-300 text-neutral-500 rounded-none text-[8px] font-mono font-bold tracking-wider">
-                {totalVisits} VISITAS
-              </span>
-            )}
+            <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
+              {totalVisits || 0} VISITAS
+            </span>
           </div>
         </div>
       </header>
