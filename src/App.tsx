@@ -111,10 +111,10 @@ export default function App() {
       .then(setQuota)
       .catch(() => {});
     // Visit counter via CountAPI (persistente)
-    fetch("https://api.countapi.xyz/hit/juanaustral/analizador-cultural")
+    fetch("https://countapi.mileshilliard.com/api/v1/hit/analizador-cultural-visitas")
       .then((r) => r.json())
       .then((d) => {
-        if (d.value) setTotalVisits(d.value);
+        if (d.value) setTotalVisits(parseInt(d.value));
       })
       .catch(() => {});
   }, []);
