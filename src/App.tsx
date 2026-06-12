@@ -101,7 +101,7 @@ export default function App() {
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Quota (límite de API) ---
-  const [quota, setQuota] = useState<{ usedToday: number; limitPerDay: number; remaining: number } | null>(null);
+  const [quota, setQuota] = useState<{ usedToday: number; limitPerDay: number; remaining: number; visits: number } | null>(null);
 
   useEffect(() => {
     fetch("/api/status")
@@ -230,13 +230,30 @@ export default function App() {
         throw new Error(data.error || "Ocurrió un error inesperado al procesar el archivo.");
       }
 
-      setResult(data.text);
+      const counts = countSections(data.text);
+      const intro = `### 📊 Resumen del Análisis\nEncontré **${counts.strengths} puntos fuertes**, **${counts.weaknesses} puntos débiles** y tengo **${counts.suggestions} sugerencias** para mejorar tu propuesta.\n\n`;
+      setResult(intro + data.text);
     } catch (err: any) {
       setErrorString(err.message || "No pudimos conectarnos con el servidor. Chequeá tu conexión en un rato.");
     } finally {
       setLoading(false);
       stopLoadingAnimation();
     }
+  };
+
+  const countSections = (text: string) => {
+    const lines = text.split("\n");
+    let section = "";
+    const counts: Record<string, number> = { strengths: 0, weaknesses: 0, suggestions: 0 };
+    for (const line of lines) {
+      if (line.includes("🌟") || line.includes("Puntos Fuertes")) section = "strengths";
+      else if (line.includes("⚠️") || line.includes("Puntos Débiles")) section = "weaknesses";
+      else if (line.includes("💡") || line.includes("Sugerencias")) section = "suggestions";
+      else if (line.startsWith("- ") || /^\d+\.\s+/.test(line.trim())) {
+        if (counts[section] !== undefined) counts[section]++;
+      }
+    }
+    return counts;
   };
 
   const handleCopyToClipboard = () => {
@@ -260,7 +277,8 @@ export default function App() {
 
   const handleDownloadPDF = () => {
     if (!result) return;
-    const blob = new Blob([result], { type: "text/plain;charset=utf-8" });
+    const attribution = "\n\n---\nDesarrollado por Juan Martinez Garcia — https://www.juanmartinezgarcia.com";
+    const blob = new Blob([result + attribution], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -271,7 +289,8 @@ export default function App() {
 
   const handleShare = async () => {
     if (!result) return;
-    const shareUrl = window.location.origin + window.location.pathname + "#share=" + encodeURIComponent(btoa(unescape(encodeURIComponent(result))));
+    const attribution = "\n\n---\nDesarrollado por Juan Martinez Garcia — https://www.juanmartinezgarcia.com";
+    const shareUrl = window.location.origin + window.location.pathname + "#share=" + encodeURIComponent(btoa(unescape(encodeURIComponent(result + attribution))));
     try {
       await navigator.clipboard.writeText(shareUrl);
       alert("✅ Link de resultado copiado al portapapeles. Compartilo con quien quieras.");
@@ -470,8 +489,13 @@ export default function App() {
           
           <div className="flex items-center gap-2 pt-1 sm:pt-0">
             <span className="px-3.5 py-1.5 bg-[#dae122] border border-neutral-900 text-neutral-950 rounded-none text-[10px] font-mono font-bold tracking-wider flex items-center gap-1.5">
-              VERSION 1.1
+              VERSION 1.2
             </span>
+            {quota && (
+              <span className="px-2 py-1 bg-white border border-neutral-300 text-neutral-500 rounded-none text-[8px] font-mono font-bold tracking-wider">
+                {quota.visits} VISITAS
+              </span>
+            )}
           </div>
         </div>
       </header>
@@ -664,7 +688,7 @@ export default function App() {
                             }}
                             className="text-[9px] font-mono font-bold text-neutral-950 border border-neutral-950 hover:bg-neutral-50 transition-colors py-1 px-2.5 bg-white flex items-center gap-1"
                           >
-                            <Eye className="w-2.5 h-2.5" /> REQUISITOS CLAVE
+                            <Info className="w-2.5 h-2.5" /> VER REQUISITOS CLAVE
                           </button>
                         </div>
                       </div>
@@ -1266,6 +1290,10 @@ export default function App() {
 
         <div className="max-w-3xl mx-auto text-[10px] text-neutral-500 font-mono font-semibold leading-relaxed border-t border-neutral-200 pt-3">
           ESTE DIAGNÓSTICO ESTÁ CONSTRUIDO BAJO RECOPILACIÓN REGLAMENTARIA AUTÓNOMA Y NO TIENE VINCULACIÓN OFICIAL NI RESPALDO DIRECTO DE LAS MENCIONADAS ENTIDADES PÚBLICAS.
+        </div>
+
+        <div className="max-w-3xl mx-auto pt-1 text-[9px] text-neutral-400 font-mono font-medium">
+          Desarrollado por <a href="https://www.juanmartinezgarcia.com" target="_blank" rel="noopener noreferrer" className="font-bold text-neutral-950 hover:underline">Juan Martinez Garcia</a>
         </div>
       </footer>
     </div>

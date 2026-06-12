@@ -41,6 +41,19 @@ function incrementQuota() {
   return q;
 }
 
+const VISITS_FILE = path.join(process.cwd(), "visits.json");
+
+function getVisits(): number {
+  try { return JSON.parse(fs.readFileSync(VISITS_FILE, "utf-8")).count || 0; }
+  catch { return 0; }
+}
+
+function incrementVisits() {
+  const count = getVisits() + 1;
+  try { fs.writeFileSync(VISITS_FILE, JSON.stringify({ count })); } catch {}
+  return count;
+}
+
 // ---
 
 // Increase body limit to handle PDF base64 uploads safely
@@ -86,14 +99,16 @@ async function generateContentWithRetry(aiClient: GoogleGenAI, callParams: any, 
   }
 }
 
-// API Status — quota info
+// API Status — quota + visit info
 app.get("/api/status", (_req: Request, res: Response) => {
   const quota = getQuota();
+  const visits = incrementVisits();
   res.json({
     usedToday: quota.count,
     limitPerDay: quota.limit,
     remaining: Math.max(0, quota.limit - quota.count),
     resetsAt: "00:00 UTC (medianoche)",
+    visits,
   });
 });
 
