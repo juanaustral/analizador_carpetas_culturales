@@ -1,0 +1,6 @@
+{
+  "name": "Analizador de Carpetas Culturales",
+  "description": "Una aplicación web optimizada para pre-evaluar la redacción, coherencia y claridad de carpetas de proyectos y subsidios culturales en Argentina.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
