@@ -50,6 +50,25 @@
 
 ---
 
+## [1.8] — 2026-06-12
+
+### Nueva opción de evaluación
+- Agregada opción **ANÁLISIS GENERAL**: evaluación integral del proyecto sin atarse a un organismo específico
+- Analiza: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad, estructura y fundamentación
+
+### Interfaz
+- Footer: "Una herramienta para artistas, creada por un artista — Juan Martinez Garcia"
+- og:image corregida: apunta directamente a la URL de Render
+
+---
+
+## [1.7] — 2026-06-12
+
+### Correcciones
+- og:image apunta a Render URL directa (no a juanmartinezgarcia.com que redirige)
+
+---
+
 ## [1.2] — 2026-06-12
 
 ### Colores en resultados

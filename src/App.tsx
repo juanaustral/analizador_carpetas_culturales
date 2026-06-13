@@ -26,10 +26,10 @@ import {
   Mail
 } from "lucide-react";
 
-type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "";
+type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "ANALISIS GENERAL" | "";
 
 interface DestinationDetail {
-  id: "FNA" | "INT" | "Ministerio de Cultura";
+  id: "FNA" | "INT" | "Ministerio de Cultura" | "ANALISIS GENERAL";
   label: string;
   org: string;
   focus: string;
@@ -69,6 +69,16 @@ const DESTINATIONS: DestinationDetail[] = [
     sources: "Directrices Federales e Históricas de Programas del Ministerio/Secretaría de Cultura de la Nación",
     sourcesUrl: "https://www.argentina.gob.ar/cultura",
     detailedAuditGuide: "La matriz de evaluación mide el desarrollo comunitario y la descentralización federal del acceso cultural. Es clave la inclusión social, la perspectiva de género, y el arraigo territorial del proyecto en zonas prioritarias."
+  },
+  {
+    id: "ANALISIS GENERAL",
+    label: "Análisis General (sin organismo específico)",
+    org: "GENERAL",
+    focus: "Evaluación integral del proyecto cultural sin un organismo en particular.",
+    desc: "Ideal para una revisión general de tu proyecto antes de decidir a qué convocatoria presentarte, o si querés una devolución sin ajustarte a requisitos específicos.",
+    sources: "Criterios generales de evaluación de proyectos culturales independientes.",
+    sourcesUrl: "",
+    detailedAuditGuide: "Se realiza un análisis holístico del proyecto evaluando: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad de la propuesta, estructura general de la carpeta, y calidad de la fundamentación. No está atado a los criterios de un organismo en particular."
   }
 ];
 
@@ -539,7 +549,7 @@ export default function App() {
           
           <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
             <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
-              VERSION 1.7
+              VERSION 1.8
             </span>
             <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
               {totalVisits || 0} VISITAS
