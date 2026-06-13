@@ -41,6 +41,16 @@ interface DestinationDetail {
 
 const DESTINATIONS: DestinationDetail[] = [
   {
+    id: "ANALISIS GENERAL",
+    label: "Análisis General",
+    org: "GENERAL",
+    focus: "Evaluación integral del proyecto cultural sin un organismo en particular.",
+    desc: "Ideal para una revisión general de tu proyecto antes de decidir a qué convocatoria presentarte, o si querés una devolución sin ajustarte a requisitos específicos.",
+    sources: "",
+    sourcesUrl: "",
+    detailedAuditGuide: "Se realiza un análisis holístico del proyecto evaluando: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad de la propuesta, estructura general de la carpeta, y calidad de la fundamentación. No está atado a los criterios de un organismo en particular."
+  },
+  {
     id: "FNA",
     label: "Fondo Nacional de las Artes",
     org: "FNA",
@@ -69,16 +79,6 @@ const DESTINATIONS: DestinationDetail[] = [
     sources: "Directrices Federales e Históricas de Programas del Ministerio/Secretaría de Cultura de la Nación",
     sourcesUrl: "https://www.argentina.gob.ar/cultura",
     detailedAuditGuide: "La matriz de evaluación mide el desarrollo comunitario y la descentralización federal del acceso cultural. Es clave la inclusión social, la perspectiva de género, y el arraigo territorial del proyecto en zonas prioritarias."
-  },
-  {
-    id: "ANALISIS GENERAL",
-    label: "Análisis General (sin organismo específico)",
-    org: "GENERAL",
-    focus: "Evaluación integral del proyecto cultural sin un organismo en particular.",
-    desc: "Ideal para una revisión general de tu proyecto antes de decidir a qué convocatoria presentarte, o si querés una devolución sin ajustarte a requisitos específicos.",
-    sources: "Criterios generales de evaluación de proyectos culturales independientes.",
-    sourcesUrl: "",
-    detailedAuditGuide: "Se realiza un análisis holístico del proyecto evaluando: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad de la propuesta, estructura general de la carpeta, y calidad de la fundamentación. No está atado a los criterios de un organismo en particular."
   }
 ];
 
@@ -1032,6 +1032,7 @@ export default function App() {
                   </p>
                 </div>
 
+                {activePriorityDetail.sources && (
                 <div className="space-y-1.5 pt-3 border-t border-neutral-200">
                   <h4 className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-widest">
                     Base Reglamentaria Recopilada
@@ -1040,6 +1041,7 @@ export default function App() {
                     <p className="text-neutral-900 text-xs font-mono font-semibold">
                       {activePriorityDetail.sources}
                     </p>
+                    {activePriorityDetail.sourcesUrl && (
                     <a 
                       href={activePriorityDetail.sourcesUrl} 
                       target="_blank" 
@@ -1048,8 +1050,10 @@ export default function App() {
                     >
                       <Globe className="w-3 h-3 shrink-0" /> SITIO OFICIAL DEL {activePriorityDetail.org} <ExternalLink className="w-2.5 h-2.5 shrink-0" />
                     </a>
+                    )}
                   </div>
                 </div>
+                )}
               </div>
 
               <div className="bg-neutral-50 p-4 border-t border-neutral-200 flex justify-end">
