@@ -26,10 +26,11 @@ import {
   Mail
 } from "lucide-react";
 
-type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "ANALISIS GENERAL" | "";
+type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "";
+type IntLine = "PRODUCCION" | "CIRCULACION" | "EVENTOS" | "FESTIVALES" | "ESPACIOS" | "MOVILIDAD" | "";
 
 interface DestinationDetail {
-  id: "FNA" | "INT" | "Ministerio de Cultura" | "ANALISIS GENERAL";
+  id: "FNA" | "INT" | "Ministerio de Cultura";
   label: string;
   org: string;
   focus: string;
@@ -40,16 +41,6 @@ interface DestinationDetail {
 }
 
 const DESTINATIONS: DestinationDetail[] = [
-  {
-    id: "ANALISIS GENERAL",
-    label: "Análisis General",
-    org: "GENERAL",
-    focus: "Evaluación integral del proyecto cultural sin un organismo en particular.",
-    desc: "Ideal para una revisión general de tu proyecto antes de decidir a qué convocatoria presentarte, o si querés una devolución sin ajustarte a requisitos específicos.",
-    sources: "",
-    sourcesUrl: "",
-    detailedAuditGuide: "Se realiza un análisis holístico del proyecto evaluando: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad de la propuesta, estructura general de la carpeta, y calidad de la fundamentación. No está atado a los criterios de un organismo en particular."
-  },
   {
     id: "FNA",
     label: "Fondo Nacional de las Artes",
@@ -82,6 +73,73 @@ const DESTINATIONS: DestinationDetail[] = [
   }
 ];
 
+interface IntLineDetail {
+  id: IntLine;
+  label: string;
+  desc: string;
+  focus: string;
+  detailedAuditGuide: string;
+  sources: string;
+  sourcesUrl: string;
+}
+
+const INT_LINES: IntLineDetail[] = [
+  {
+    id: "PRODUCCION",
+    label: "Producción de Obra",
+    desc: "Para elencos que necesiten apoyo en la puesta en escena de un nuevo espectáculo teatral.",
+    focus: "Concepto y fundamentación, factibilidad presupuestaria, trayectoria del equipo, relevancia cultural, plan de comunicación y nacionalidad del autor.",
+    detailedAuditGuide: "La evaluación considera: (a) Concepto y fundamentación — solidez del concepto, solvencia en la propuesta y calidad del proyecto para contribuir al quehacer teatral. (b) Factibilidad y sostenibilidad — presupuesto coherente y realista, plan de ejecución claro y estrategias de sostenibilidad. (c) Trayectoria y desarrollo de capacidades — antecedentes del equipo, adecuación del desafío artístico a la trayectoria declarada y estructura clara de roles. (d) Relevancia cultural y comunitaria — representatividad de la propuesta en su comunidad y pertinencia para el desarrollo regional. (e) Plan estratégico de comunicación, plan de medios y gestión de públicos. (f) Nacionalidad del autor de la obra.",
+    sources: "Reglamento de Aportes para Producción de Obra — INT (Ley N° 24.800 y Decreto Reglamentario N° 991/97)",
+    sourcesUrl: "https://inteatro.ar"
+  },
+  {
+    id: "CIRCULACION",
+    label: "Circulación Nacional e Internacional",
+    desc: "Para elencos que quieran realizar giras, festivales o programaciones fuera de su provincia o del país.",
+    focus: "Trayectoria artística del espectáculo, pertinencia de la circulación, fundamentación de objetivos y alianzas, plan de comunicación y antecedentes del elenco.",
+    detailedAuditGuide: "La evaluación considera: (a) Trayectoria, contenido y enfoque artístico del espectáculo — calidad artística y madurez del montaje. (b) Pertinencia de la actividad a realizar y resultados esperados de acuerdo al cronograma e itinerario de viaje presentado. (c) Fundamentación del proyecto — objetivos de la circulación, actividades paralelas y alianzas estratégicas. (d) Plan estratégico de comunicación y plan de medios. (e) Antecedentes individuales de todos los integrantes del elenco y antecedentes en conjunto.",
+    sources: "Reglamento de Aportes para Circulación Nacional e Internacional — INT (Ley N° 24.800 y Decreto Reglamentario N° 991/97)",
+    sourcesUrl: "https://inteatro.ar"
+  },
+  {
+    id: "EVENTOS",
+    label: "Eventos y Programaciones",
+    desc: "Para ciclos, congresos, encuentros y programaciones especiales de teatro independiente.",
+    focus: "Fortalecimiento comunitario, proyecto artístico-cultural, antecedentes, presupuesto con cachet y cobertura, y plan de comunicación/públicos.",
+    detailedAuditGuide: "La evaluación considera: (a) El fortalecimiento cultural y comunitario — vínculo con la comunidad, cantidad de personas participantes movilizadas y espectadores estimados. (b) El proyecto artístico y cultural — fundamentación, coherencia organizativa, actividades a desarrollar, objetivos, descripción y viabilidad del proyecto. (c) Los antecedentes personales de quienes realicen el evento y gestiones en conjunto. (d) El presupuesto — cobertura de gastos a las personas participantes, pago de cachet, cobertura de alojamiento, comidas y traslados. (e) El plan estratégico de comunicación, plan de prensa y gestión de públicos. (f) Las características generales del evento — identidad, originalidad, innovación e integración con la comunidad teatral local y provincial.",
+    sources: "Reglamento de Aportes para Eventos y Programaciones — INT (Ley N° 24.800 y Decreto Reglamentario N° 991/97)",
+    sourcesUrl: "https://inteatro.ar"
+  },
+  {
+    id: "FESTIVALES",
+    label: "Festivales",
+    desc: "Para festivales a gran escala con programación mínima de 16 espectáculos y actividades escénicas.",
+    focus: "Objetivos y fundamentación, alcance del presupuesto, cantidad de participantes y alianzas, programación, antecedentes y plan de públicos.",
+    detailedAuditGuide: "La evaluación considera: De la edición por la que aplica: (a) Objetivos, concepto, fundamentación y descripción del proyecto — ejecución y alcance del presupuesto. (b) Cantidad de participantes, cogestiones, alianzas estratégicas, espacios que abarca el festival y pertinencia para el desarrollo regional. (c) Programación y descripción del proyecto — actividades a desarrollar, cantidad de funciones y/o presentaciones. (d) Antecedentes personales de quienes realicen el evento y gestiones en conjunto. (e) Plan estratégico de comunicación y gestión de públicos. De antecedentes: (f) Características propias del proyecto — particularidades, idiosincrasia, objetivos, actividades complementarias, subsedes, instancias que integren a la comunidad teatral local, provincial y regional, ubicación geográfica y objetivos.",
+    sources: "Reglamento de Aportes para Festivales — INT (Ley N° 24.800 y Decreto Reglamentario N° 991/97)",
+    sourcesUrl: "https://inteatro.ar"
+  },
+  {
+    id: "ESPACIOS",
+    label: "Gestión de Espacios Teatrales",
+    desc: "Para salas y espacios teatrales independientes que necesiten consolidar su gestión y programación.",
+    focus: "Impacto territorial, proyecto y proyección del espacio, y génesis/biografía de la sala con antecedentes de gestión.",
+    detailedAuditGuide: "La evaluación considera: (a) Impacto territorial — vinculación y relevancia cultural del espacio teatral dentro de su comunidad: funciones realizadas, actividades del espacio y talleres, redes de colaboración y asociativismo. (b) Proyecto y proyección del espacio — perfil artístico, fundamentación y objetivos del proyecto del espacio teatral, programación tentativa, gestión y organización del espacio y equipo de trabajo, infraestructura y equipamiento técnico. (c) Génesis y biografía de la sala — antecedentes de la gestión del espacio teatral, programación, eventos y otras actividades de los últimos dos años.",
+    sources: "Reglamento de Aportes para Gestión de Espacios Teatrales — INT (Ley N° 24.800 y Decreto Reglamentario N° 991/97)",
+    sourcesUrl: "https://inteatro.ar"
+  },
+  {
+    id: "MOVILIDAD",
+    label: "Movilidad Internacional",
+    desc: "Para artistas y gestores que viajen al exterior a formaciones, congresos, residencias o actividades artísticas.",
+    focus: "Trayectoria y relevancia de la institución destino, pertinencia de la actividad, desarrollo de capacidades y plan de comunicación.",
+    detailedAuditGuide: "La evaluación considera: (a) Trayectoria, relevancia y alcance de la institución y/o formación donde fue contratado, aceptado o invitado a asistir. (b) Pertinencia de la actividad a realizar, objetivos y solidez en la contraprestación propuesta. (c) Desarrollo de capacidades — antecedentes de la persona, pertinencia del otorgamiento del aporte en torno al beneficio que pueda producir a futuro la acción realizada en términos de desarrollo profesional. (d) Plan estratégico de comunicación y plan de prensa.",
+    sources: "Reglamento de Aportes para la Movilidad Internacional — INT (Ley N° 24.800 y Decreto Reglamentario N° 991/97)",
+    sourcesUrl: "https://inteatro.ar"
+  }
+];
+
 // Encouraging tips shown in Argentine custom culture slang/tone during loading
 const LOADING_PHRASES = [
   "Analizando la viabilidad de la propuesta para tu público objetivo...",
@@ -96,6 +154,7 @@ export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [pdfBase64, setPdfBase64] = useState<string>("");
   const [destination, setDestination] = useState<Destination>("");
+  const [intLine, setIntLine] = useState<IntLine>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState<number>(0);
   const [result, setResult] = useState<string>("");
@@ -106,6 +165,7 @@ export default function App() {
 
   // Modal State Controllers
   const [activePriorityDetail, setActivePriorityDetail] = useState<DestinationDetail | null>(null);
+  const [activeLineDetail, setActiveLineDetail] = useState<IntLineDetail | null>(null);
   const [showCriteriaModal, setShowCriteriaModal] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -226,6 +286,12 @@ export default function App() {
   const handleEvaluate = async () => {
     if (!pdfBase64 || !destination) return;
 
+    // If INT is selected, require a specific line
+    if (destination === "INT" && !intLine) {
+      setErrorString("Si elegiste INT, necesitás seleccionar una línea de postulación específica para que evaluemos tu proyecto.");
+      return;
+    }
+
     // Check if quota is exhausted
     if (quota && quota.remaining <= 0) {
       setErrorString("⚠️ El límite diario de la herramienta se agotó. Probá de nuevo más tarde o volvé mañana. Si creés que es un error, intentá de nuevo en un rato.");
@@ -246,6 +312,7 @@ export default function App() {
         body: JSON.stringify({
           pdfBase64,
           destination,
+          intLine,
         }),
       });
 
@@ -325,6 +392,7 @@ export default function App() {
     setFile(null);
     setPdfBase64("");
     setDestination("");
+    setIntLine("");
     setErrorString("");
   };
 
@@ -371,7 +439,7 @@ export default function App() {
     return parts.map((part, index) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <span key={index} className={`font-extrabold text-neutral-950 ${highlightClass} px-0.5`}>
+          <span key={index} className={`font-extrabold text-neutral-950 ${highlightClass} px-1 py-0.5 text-xs font-mono border-b border-neutral-900`}>
             {part.slice(2, -2)}
           </span>
         );
@@ -519,20 +587,13 @@ export default function App() {
       <header className="border-b border-neutral-900 bg-white py-5 px-4 sm:px-6 md:px-8 sticky top-0 z-30 print:hidden shadow-xs">
         <div id="header-inner" className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <img 
-                src="/logo.png" 
-                alt="Analizador de Carpetas Culturales" 
-                className="w-8 h-8 md:w-10 md:h-10 object-contain bg-white border border-neutral-900 p-0.5"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-              <div>
-                <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-neutral-500">PROYECTO INDEPENDIENTE // 2026</span>
-                <h1 className="text-xl md:text-2xl font-display font-black text-neutral-950 tracking-tight">
-                  ANALIZADOR DE CARPETAS CULTURALES
-                </h1>
-              </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-[#dae122] border border-neutral-900 rounded-none inline-block"></span>
+              <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-neutral-500">PROYECTO INDEPENDIENTE // 2026</span>
             </div>
+            <h1 className="text-xl md:text-2xl font-display font-black text-neutral-950 tracking-tight">
+              ANALIZADOR DE CARPETAS CULTURALES
+            </h1>
             <p className="text-xs text-neutral-500 font-mono">
               CREADO POR{" "}
               <a 
@@ -549,7 +610,7 @@ export default function App() {
           
           <div className="flex flex-col items-end gap-1 pt-1 sm:pt-0">
             <span className="px-3 py-1 bg-neutral-100 border border-neutral-300 text-neutral-600 rounded-none text-[9px] font-mono font-bold tracking-wider">
-              VERSION 1.8
+              VERSION 1.3
             </span>
             <span className="px-2 py-0.5 bg-white border border-neutral-200 text-neutral-400 rounded-none text-[7px] font-mono font-bold tracking-wider">
               {totalVisits || 0} VISITAS
@@ -597,7 +658,7 @@ export default function App() {
                 01 // {file ? "✓ PDF CARGADO" : "SUBIR PDF"}
               </span>
               <span className={`px-3 py-3 font-bold transition-colors ${destination ? 'bg-[#dae122] text-neutral-900' : file ? 'bg-neutral-100 text-neutral-900' : 'bg-white text-neutral-400'}`}>
-                02 // {destination ? `✓ ${destination}` : "CONVOCATORIA"}
+                02 // {destination ? `✓ ${destination}${intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : ""}` : "CONVOCATORIA"}
               </span>
               <span className={`px-3 py-3 font-bold ${destination && file ? 'bg-neutral-950 text-[#dae122]' : 'bg-white text-neutral-400'}`}>
                 03 // DIAGNÓSTICO
@@ -702,7 +763,10 @@ export default function App() {
                     return (
                       <div
                         key={dest.id}
-                        onClick={() => setDestination(dest.id)}
+                        onClick={() => {
+                          setDestination(dest.id);
+                          if (dest.id !== "INT") setIntLine("");
+                        }}
                         className={`w-full p-4 rounded-none border transition-all duration-200 relative bg-white flex flex-col gap-2 cursor-pointer ${
                           isSelected 
                             ? "border-neutral-900 bg-neutral-50 ring-1 ring-neutral-900" 
@@ -753,6 +817,63 @@ export default function App() {
                     );
                   })}
                 </div>
+
+                {/* INT Sub-line selector */}
+                {destination === "INT" && (
+                  <div className="mt-3 space-y-2 pl-4 border-l-2 border-[#dae122]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                      <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                        LÍNEA DE POSTULACIÓN INT
+                      </span>
+                      <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                    </div>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {INT_LINES.map((line) => {
+                        const isLineSelected = intLine === line.id;
+                        return (
+                          <div
+                            key={line.id}
+                            onClick={() => setIntLine(line.id)}
+                            className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                              isLineSelected 
+                                ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                                : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                  isLineSelected ? "bg-neutral-950" : "bg-white"
+                                }`}>
+                                  {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                </span>
+                                <span className={`font-bold text-xs text-neutral-950 font-sans ${
+                                  isLineSelected ? "font-extrabold" : "font-semibold"
+                                }`}>
+                                  {line.label}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveLineDetail(line);
+                                }}
+                                className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
+                              >
+                                <Info className="w-2 h-2" /> VER LINEA
+                              </button>
+                            </div>
+                            <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
+                              {line.desc}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -769,9 +890,9 @@ export default function App() {
               <button
                 id="evaluate-btn"
                 onClick={handleEvaluate}
-                disabled={!pdfBase64 || !destination || loading}
+                disabled={!pdfBase64 || !destination || (destination === "INT" && !intLine) || loading}
                 className={`group w-full md:w-auto px-10 py-3.5 rounded-none font-mono font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-3 border transition-all ${
-                  (!pdfBase64 || !destination || loading)
+                  (!pdfBase64 || !destination || (destination === "INT" && !intLine) || loading)
                     ? "bg-neutral-100 cursor-not-allowed text-neutral-400 border-neutral-200"
                     : "bg-neutral-950 text-[#dae122] border-neutral-950 hover:bg-[#121212]/90"
                 }`}
@@ -861,7 +982,7 @@ export default function App() {
                     REPORTE DIAGNÓSTICO GENERAL
                   </span>
                   <span className="text-[9px] uppercase font-mono font-bold tracking-widest px-2.5 py-1 bg-[#dae122] text-neutral-950 border border-neutral-950 rounded-none">
-                    DESTINO: {destination}
+                    DESTINO: {destination}{intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : ""}
                   </span>
                 </div>
                 
@@ -1032,7 +1153,6 @@ export default function App() {
                   </p>
                 </div>
 
-                {activePriorityDetail.sources && (
                 <div className="space-y-1.5 pt-3 border-t border-neutral-200">
                   <h4 className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-widest">
                     Base Reglamentaria Recopilada
@@ -1041,7 +1161,6 @@ export default function App() {
                     <p className="text-neutral-900 text-xs font-mono font-semibold">
                       {activePriorityDetail.sources}
                     </p>
-                    {activePriorityDetail.sourcesUrl && (
                     <a 
                       href={activePriorityDetail.sourcesUrl} 
                       target="_blank" 
@@ -1050,16 +1169,114 @@ export default function App() {
                     >
                       <Globe className="w-3 h-3 shrink-0" /> SITIO OFICIAL DEL {activePriorityDetail.org} <ExternalLink className="w-2.5 h-2.5 shrink-0" />
                     </a>
-                    )}
                   </div>
                 </div>
-                )}
               </div>
 
               <div className="bg-neutral-50 p-4 border-t border-neutral-200 flex justify-end">
                 <button
                   type="button"
                   onClick={() => setActivePriorityDetail(null)}
+                  className="px-4 py-2 bg-neutral-950 text-white hover:bg-neutral-800 text-[10px] font-mono tracking-wider font-bold"
+                >
+                  ENTENDIDO
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating INT Line Detail Modal */}
+      <AnimatePresence>
+        {activeLineDetail && (
+          <motion.div
+            id="line-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-xs"
+          >
+            <motion.div
+              id="line-modal"
+              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white w-full max-w-lg rounded-none border border-neutral-900 flex flex-col shadow-lg"
+            >
+              <div className="bg-neutral-950 border-b border-neutral-900 p-4 text-[#dae122] flex justify-between items-center">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 bg-[#dae122] shrink-0"></span>
+                  <h3 className="font-mono font-bold text-xs uppercase tracking-widest text-[#dae122]">
+                    INT — {activeLineDetail.label} • CRITERIOS DE EVALUACIÓN
+                  </h3>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setActiveLineDetail(null)}
+                  className="text-neutral-400 hover:text-white transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="p-6 space-y-5 flex-1 select-text max-h-[65vh] overflow-y-auto">
+                <div className="space-y-1.5">
+                  <h4 className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-widest">
+                    Línea de Postulación
+                  </h4>
+                  <p className="text-neutral-950 text-sm font-extrabold font-display tracking-tight">
+                    {activeLineDetail.label}
+                  </p>
+                  <p className="text-neutral-600 text-xs font-semibold leading-relaxed">
+                    {activeLineDetail.desc}
+                  </p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-widest">
+                    Foco de Evaluación Prioritario
+                  </h4>
+                  <p className="text-neutral-950 text-xs leading-relaxed font-bold bg-[#dae122]/15 p-4 border border-neutral-200">
+                    "{activeLineDetail.focus}"
+                  </p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-widest">
+                    Directivas Técnicas de Viabilidad
+                  </h4>
+                  <p className="text-neutral-700 text-xs leading-relaxed font-semibold bg-neutral-50 p-4 border border-neutral-200">
+                    {activeLineDetail.detailedAuditGuide}
+                  </p>
+                </div>
+
+                <div className="space-y-1.5 pt-3 border-t border-neutral-200">
+                  <h4 className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-widest">
+                    Base Reglamentaria
+                  </h4>
+                  <div className="flex flex-col gap-1.5">
+                    <p className="text-neutral-900 text-xs font-mono font-semibold">
+                      {activeLineDetail.sources}
+                    </p>
+                    <a 
+                      href={activeLineDetail.sourcesUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-[10px] font-mono font-bold text-neutral-950 hover:underline flex items-center gap-1.5 mt-1 bg-neutral-50 border border-neutral-200 p-2 w-fit"
+                    >
+                      <Globe className="w-3 h-3 shrink-0" /> SITIO OFICIAL DEL INT <ExternalLink className="w-2.5 h-2.5 shrink-0" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-neutral-50 p-4 border-t border-neutral-200 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setActiveLineDetail(null)}
                   className="px-4 py-2 bg-neutral-950 text-white hover:bg-neutral-800 text-[10px] font-mono tracking-wider font-bold"
                 >
                   ENTENDIDO
@@ -1325,7 +1542,7 @@ export default function App() {
           <div className="bg-neutral-50 border border-neutral-200 p-3 rounded-none">
             <p className="text-[9px] font-mono font-bold text-neutral-600 tracking-wider uppercase mb-1">⚠️ Límite de uso</p>
             <p className="text-[10px] font-mono text-neutral-500 leading-relaxed">
-              Esta herramienta es totalmente gratuita y por ello tiene un límite de análisis por día. Si al cargar un archivo ves un mensaje de error de límite, esperá y volvé a intentar.
+              Esta herramienta usa la API gratuita de Gemini que tiene un límite de 1.500 análisis por día. Si al cargar un archivo ves un mensaje de error de límite, esperá unos minutos y volvé a intentar.
             </p>
           </div>
         </div>
@@ -1358,7 +1575,7 @@ export default function App() {
         </div>
 
         <div className="max-w-3xl mx-auto pt-1 text-[9px] text-neutral-400 font-mono font-medium">
-          Una herramienta para <span className="font-bold text-neutral-700">artistas</span>, creada por un <span className="font-bold text-neutral-700">artista</span> — <a href="https://www.juanmartinezgarcia.com" target="_blank" rel="noopener noreferrer" className="font-bold text-neutral-950 hover:underline">Juan Martinez Garcia</a>
+          Desarrollado por <a href="https://www.juanmartinezgarcia.com" target="_blank" rel="noopener noreferrer" className="font-bold text-neutral-950 hover:underline">Juan Martinez Garcia</a>
         </div>
       </footer>
     </div>

@@ -6,66 +6,12 @@
 - Index.html: meta description, keywords, Open Graph tags, Twitter Card, canonical URL
 - JSON-LD structured data (WebApplication schema)
 - Favicon emoji SVG
-- og:image con logo del proyecto para compartir en redes
 - Endpoint `/robots.txt` con sitemap reference
 - Endpoint `/sitemap.xml` con URL principal
 
-### Logo e imágenes
-- Logo de carpeta con nodos en el header (fondo blanco con borde para visibilidad)
-- Favicon ahora usa el logo PNG en vez de emoji SVG
-- og:image actualizada con imagen grupal de colaboración para redes sociales
-- Logo y assets movidos a `public/` para que sirvan en producción
-
-### Respuestas más detalladas
-- Eliminada restricción "Sé directo y ve al grano"
-- Nuevas instrucciones: "Sé detallado y exhaustivo, mientras más análisis mejor"
-- Citá fragmentos textuales del PDF para respaldar observaciones
-- Items ilimitados en cada sección (antes máximo 3)
-- Diagnóstico detallado (antes "máximo 4 líneas")
-- Sugerencias sin límite de cantidad
-- `maxOutputTokens`: 4.096 → 8.192
-
 ### Correcciones
-- Contador de visitas: migrado de countapi.xyz (caído) a countapi.mileshilliard.com
-- Corregido bug de div faltante en header JSX
-
----
-
-## [1.6] — 2026-06-12
-
-### Ajustes de respuestas
-- Punto medio entre respuestas cortas y ultra detalladas
-- `maxOutputTokens`: 8.192 → 4.096
-- Prompt: "calidad sobre cantidad, mejor 3 puntos bien explicados que 10 superficiales"
-- Items por sección: entre 2 y 5 (antes ilimitados)
-- Diagnóstico: 3 a 5 líneas (antes párrafo detallado sin límite)
-
-### Interfaz
-- Footer: texto de límite de uso simplificado (sin mencionar Gemini ni 1.500)
-- Bold text en resultados: ya no tiene borde inferior ni padding, fluye inline sin parecer recuadro separado
-
-### Infraestructura
-- Keep-alive GitHub Actions: ahora 24/7 (antes solo 6-23 UTC)
-- Redirect de hPanel restaurado (`juanmartinezgarcia.com/analizador` → Render)
-
----
-
-## [1.8] — 2026-06-12
-
-### Nueva opción de evaluación
-- Agregada opción **ANÁLISIS GENERAL**: evaluación integral del proyecto sin atarse a un organismo específico
-- Analiza: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad, estructura y fundamentación
-
-### Interfaz
-- Footer: "Una herramienta para artistas, creada por un artista — Juan Martinez Garcia"
-- og:image corregida: apunta directamente a la URL de Render
-
----
-
-## [1.7] — 2026-06-12
-
-### Correcciones
-- og:image apunta a Render URL directa (no a juanmartinezgarcia.com que redirige)
+- Contador de visitas: migrado de countapi.xyz (caido) a countapi.mileshilliard.com
+- Contador ahora es persistente y funcional
 
 ---
 

@@ -124,7 +124,7 @@ const FEEDBACK_FILE = path.join(process.cwd(), "feedback.json");
 app.get("/robots.txt", (_req: Request, res: Response) => {
   res.type("text/plain").send(`User-agent: *
 Allow: /
-Sitemap: https://juanmartinezgarcia.com/analizador/sitemap.xml
+Sitemap: https://analizador-carpetas-culturales.onrender.com/sitemap.xml
 `);
 });
 
@@ -132,7 +132,7 @@ app.get("/sitemap.xml", (_req: Request, res: Response) => {
   res.type("application/xml").send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://juanmartinezgarcia.com/analizador</loc>
+    <loc>https://analizador-carpetas-culturales.onrender.com/</loc>
     <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -197,7 +197,7 @@ app.post("/api/feedback", async (req: Request, res: Response) => {
 // API Endpoint to evaluate cultural folders
 app.post("/api/evaluate", async (req: Request, res: Response) => {
   try {
-    const { pdfBase64, destination } = req.body;
+    const { pdfBase64, destination, intLine } = req.body;
 
     if (!pdfBase64) {
       return res.status(400).json({ error: "Falta el archivo PDF en formato base64." });
@@ -225,15 +225,28 @@ Sos un Asistente de Evaluación de Proyectos Culturales Independientes en Argent
 # TONO Y ESTILO
 - Hablá en español de Argentina (tratar de "vos"), con un tono cercano, empático y alentador.
 - Evitá tecnicismos complejos de gestión cultural; explicá los problemas de forma simple para que cualquiera lo entienda.
-- Sé detallado pero conciso. Priorizá calidad sobre cantidad: mejor 3 puntos bien explicados que 10 superficiales.
-- Usá ejemplos concretos extraídos del PDF para fundamentar cada punto.
-- Citá fragmentos textuales del PDF cuando sea relevante para respaldar tus observaciones.
+- Sé directo y ve al grano para optimizar tokens de salida.
 
 # MATRIZ DE EVALUACIÓN SEGÚN LA OPCIÓN SELECCIONADA
 - Si el usuario eligió FNA (Fondo Nacional de las Artes): Evaluá con prioridad la fundamentación artística, la originalidad y la trayectoria.
-- Si el usuario eligió INT (Instituto Nacional del Teatro): Evaluá con prioridad la viabilidad técnica, operativa, el desglose de la puesta/gira y el público objetivo.
+- Si el usuario eligió INT (Instituto Nacional del Teatro) sin una línea específica: Evaluá con prioridad la viabilidad técnica, operativa, el desglose de la puesta/gira y el público objetivo.
+- Si el usuario eligió INT con una línea específica: Usá los criterios detallados para esa línea (ver abajo).
 - Si el usuario eligió Ministerio de Cultura: Evaluá con prioridad el impacto sociocomunitario, la inclusión y el desarrollo territorial.
-- Si el usuario eligió ANÁLISIS GENERAL: Realizá una evaluación integral del proyecto sin atarte a ningún organismo en particular. Analizá: claridad de objetivos, coherencia narrativa, viabilidad presupuestaria, impacto potencial, originalidad de la propuesta, estructura de la carpeta y calidad de la fundamentación. Sé amplio y constructivo.
+
+# CRITERIOS ESPECÍFICOS POR LÍNEA DEL INT
+Cuando el usuario selecciona una línea de postulación del INT, evaluá usando estos criterios:
+
+- **Producción de Obra**: Evaluá (a) Concepto y fundamentación — solidez del concepto y calidad del proyecto para contribuir al quehacer teatral. (b) Factibilidad y sostenibilidad — presupuesto coherente y realista, plan de ejecución claro. (c) Trayectoria y desarrollo de capacidades — antecedentes del equipo, adecuación del desafío artístico. (d) Relevancia cultural y comunitaria — representatividad de la propuesta en su comunidad, pertinencia para el desarrollo regional. (e) Plan estratégico de comunicación y gestión de públicos. (f) Nacionalidad del autor (los espectáculos de autoría nacional son bonificados con 10%).
+
+- **Circulación Nacional e Internacional**: Evaluá (a) Trayectoria, contenido y enfoque artístico del espectáculo. (b) Pertinencia de la actividad y resultados esperados según cronograma e itinerario. (c) Fundamentación del proyecto — objetivos de la circulación, actividades paralelas y alianzas estratégicas. (d) Plan estratégico de comunicación y plan de medios. (e) Antecedentes individuales de los integrantes y del elenco en conjunto. Verificá que la obra tenga al menos 6 funciones realizadas.
+
+- **Eventos y Programaciones**: Evaluá (a) Fortalecimiento cultural y comunitario — vínculo con la comunidad, cantidad de participantes y espectadores estimados. (b) Proyecto artístico y cultural — fundamentación, coherencia organizativa, actividades, viabilidad. (c) Antecedentes personales. (d) Presupuesto — cobertura de gastos a participantes, cachet, alojamiento, comidas y traslados. (e) Plan estratégico de comunicación, prensa y gestión de públicos. (f) Identidad, originalidad e innovación del evento. Verificá que los organizadores acrediten al menos 2 años de actividad.
+
+- **Festivales**: Evaluá (a) Objetivos, concepto, fundamentación, descripción del proyecto y alcance del presupuesto. (b) Cantidad de participantes, cogestiones, alianzas estratégicas, espacios que abarca y pertinencia para el desarrollo regional. (c) Programación — actividades a desarrollar, cantidad de funciones. (d) Antecedentes personales y gestiones en conjunto. (e) Plan estratégico de comunicación y gestión de públicos. (f) Características propias — idiosincrasia, actividades complementarias, subsedes, integración comunitaria. Verificá que el festival tenga al menos 16 espectáculos/actividades.
+
+- **Gestión de Espacios Teatrales**: Evaluá (a) Impacto territorial — vinculación y relevancia cultural del espacio en su comunidad: funciones realizadas, actividades/talleres, redes de colaboración y asociativismo. (b) Proyecto y proyección del espacio — perfil artístico, fundamentación, programación tentativa, equipo de trabajo, infraestructura y equipamiento técnico. (c) Génesis y biografía de la sala — antecedentes de gestión, programación y actividades de los últimos 2 años.
+
+- **Movilidad Internacional**: Evaluá (a) Trayectoria, relevancia y alcance de la institución o formación donde fue aceptado/invitado. (b) Pertinencia de la actividad, objetivos y solidez de la contraprestación propuesta. (c) Desarrollo de capacidades — antecedentes de la persona y beneficio futuro de la acción. (d) Plan estratégico de comunicación y plan de prensa.
 
 # REGLA CRUCIAL
 NO reescribas ni corrijas el texto original del artista. Tu función es auditar y dar feedback.
@@ -242,22 +255,22 @@ NO reescribas ni corrijas el texto original del artista. Tu función es auditar 
 NO agregues ningún saludo, introducción, mensaje personalizado ni texto de apertura. Arrancá DIRECTAMENTE con la primera sección "### 🌟 Puntos Fuertes de la Propuesta". NADA antes de eso.
 
 # ESTRUCTURA OBLIGATORIA DE LA RESPUESTA
-Devolvé el análisis usando exactamente esta estructura de títulos. Incluí entre 2 y 5 items por sección, con explicaciones claras y concretas:
+Devolvé el análisis usando exactamente esta estructura de títulos:
 
 ### 🌟 Puntos Fuertes de la Propuesta
-- [Mencionar entre 2 y 4 virtudes encontradas en el PDF según el perfil de la convocatoria. Sé específico pero conciso en cada una].
+- [Mencionar de 1 a 3 virtudes encontradas en el PDF según el perfil de la convocatoria].
 
 ### 🔍 Diagnóstico General de la Carpeta
-- [Un párrafo de 3 a 5 líneas con una mirada global del estado del documento, señalando coherencia general, estructura, y nivel de preparación].
+- [Un breve párrafo de máximo 4 líneas con una mirada global del estado del documento].
 
 ### ⚠️ Puntos Débiles e Incongruencias
-- **[Aspecto a corregir]**: [Explicación clara de por qué es un problema y cómo mejorarlo, en un párrafo corto].
-- **[Dato faltante]**: [Qué información omitió el usuario y por qué es importante, en una o dos líneas].
+- **[Aspecto a corregir]**: [Explicación amigable de por qué es un problema o genera confusión].
+- **[Dato faltante]**: [Qué información clave omitió el usuario en su PDF y debe agregar].
 
 ### 💡 Sugerencias Prácticas para tu Próxima Versión
-1. [Acción concreta y útil para mejorar la propuesta, en una o dos líneas].
-2. [Acción concreta y útil].
-3. [Acción concreta y útil].
+1. [Acción concreta 1 para mejorar la coherencia].
+2. [Acción concreta 2].
+3. [Acción concreta 3].
 `;
 
     const response = await generateContentWithRetry(ai, {
@@ -270,7 +283,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos. Incluí en
           },
         },
         {
-          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
+          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}${intLine ? `, línea específica: ${intLine}` : ""}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
         },
       ],
       config: {
@@ -307,9 +320,7 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    const publicPath = path.join(process.cwd(), "public");
     app.use(express.static(distPath));
-    app.use(express.static(publicPath));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
