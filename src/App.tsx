@@ -1770,7 +1770,7 @@ export default function App() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.98, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="bg-white w-full max-w-xl rounded-none border border-neutral-900 flex flex-col shadow-lg max-h-[85vh]"
+              className="bg-white w-full max-w-2xl rounded-none border border-neutral-900 flex flex-col shadow-lg max-h-[85vh]"
             >
               <div className="bg-neutral-950 border-b border-neutral-900 p-4 text-[#dae122] flex justify-between items-center shrink-0">
                 <div className="flex items-center gap-2.5">
@@ -1797,7 +1797,7 @@ export default function App() {
                     else if (lineModalDest === "Ministerio de Cultura") setMinculturaLine("");
                     setShowLineModal(false);
                   }}
-                  className="w-full p-4 rounded-none border-2 border-[#dae122] bg-[#dae122]/10 transition-all duration-200 cursor-pointer hover:bg-[#dae122]/20 flex flex-col gap-1.5"
+                  className="w-full p-4 rounded-none border border-neutral-300 bg-white transition-all duration-200 cursor-pointer hover:border-neutral-900 hover:bg-neutral-50 flex flex-col gap-1.5"
                 >
                   <div className="flex items-center gap-2">
                     <span className="w-3 h-3 bg-neutral-950 border border-neutral-900 flex items-center justify-center shrink-0">
@@ -1875,7 +1875,7 @@ export default function App() {
                             <Info className="w-2 h-2" /> VER LINEA
                           </button>
                         </div>
-                        <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-5 line-clamp-2">
+                        <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-5">
                           {line.desc}
                         </p>
                       </div>
