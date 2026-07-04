@@ -28,6 +28,24 @@ import {
 
 type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "";
 type IntLine = "PRODUCCION" | "CIRCULACION" | "EVENTOS" | "FESTIVALES" | "ESPACIOS" | "MOVILIDAD" | "";
+type FnaLine = "COMPOSICION_ANBA" | "VALORACION_PATRIMONIAL" | "";
+type MinculturaLine = 
+  | "CIRCULACION" 
+  | "PROGRAMACION" 
+  | "RESIDENCIAS_ARTISTAS" 
+  | "RESIDENCIAS_INSTITUCIONES" 
+  | "ESPECIALIZACION" 
+  | "PROYECTOS_VIRTUALES" 
+  | "PROMOCION_REPERTORIO" 
+  | "MID_ATLANTIC" 
+  | "EMILIA_ROMAGNA" 
+  | "ARTS_COUNCIL_ENGLAND" 
+  | "CPLP" 
+  | "PREMIO_BRASIL" 
+  | "CREACION_CANCIONES" 
+  | "CANCIONES_INFANCIAS" 
+  | "COMPOSICION_SINFONICA" 
+  | "";
 
 interface DestinationDetail {
   id: "FNA" | "INT" | "Ministerio de Cultura";
@@ -140,6 +158,165 @@ const INT_LINES: IntLineDetail[] = [
   }
 ];
 
+const FNA_LINES: (IntLineDetail & { id: FnaLine })[] = [
+  {
+    id: "COMPOSICION_ANBA",
+    label: "Premio de Composición ANBA-FNA 2026",
+    desc: "Obras corales inéditas sin acompañamiento instrumental, de 3 a 12 minutos, para coro mixto a no más de 4 voces.",
+    focus: "Originalidad de la composición, calidad de la partitura, cumplimiento de requisitos formales (plazas, duración, voces), seudónimo y documentación legal.",
+    detailedAuditGuide: "Se evalúa: (a) Cumplimiento de requisitos de admisibilidad — compositor argentino o naturalizado residente, mayor de 18 años, nacido a partir del 1/1/1986. (b) Originalidad e inédititud de la obra — no estrenada ni premiada previamente, registrada en Propiedad Intelectual. (c) Características técnicas — obra coral sin acompañamiento instrumental, duración entre 3 y 12 minutos, coro mixto a no más de 4 voces (divisi a due ocasional, hasta 8 partes reales). (d) Único compositor — no se admiten coautorías, arreglos ni transcripciones. (e) Documentación — partitura con seudónimo en todas las páginas, CV, DNI, autorizaciones de texto si corresponde, certificado de Propiedad Intelectual. (f) Premio — estreno por CONAMA en 2da mitad de 2026 + $2.000.000 + diploma.",
+    sources: "Reglamento del Premio de Composición ANBA-FNA 2026 — Academia Nacional de Bellas Artes y Fondo Nacional de las Artes",
+    sourcesUrl: "https://www.argentina.gob.ar/noticias/premio-de-composicion-anba-fna-2026"
+  },
+  {
+    id: "VALORACION_PATRIMONIAL",
+    label: "Concurso Valoración Patrimonial 2026",
+    desc: "Concurso de Valoración Patrimonial de Cementerios, Templos y Lugares Sagrados. Para proyectos de puesta en valor y registro patrimonial.",
+    focus: "Pertinencia patrimonial, metodología de trabajo, impacto comunitario y viabilidad técnica del proyecto de valoración.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia del sitio seleccionado — relevancia histórica, arquitectónica y cultural del cementerio, templo o lugar sagrado. (b) Metodología de trabajo — plan de registro, documentación y conservación propuesto. (c) Impacto comunitario y vinculación con actores locales. (d) Viabilidad técnica y presupuestaria del proyecto. (e) Antecedentes del equipo de trabajo en patrimonio cultural.",
+    sources: "Bases del Concurso de Valoración Patrimonial de Cementerios, Templos y Lugares Sagrados 2026 — Fondo Nacional de las Artes",
+    sourcesUrl: "https://www.argentina.gob.ar/cultura/fna/concursos"
+  }
+];
+
+const MINCULTURA_LINES: (IntLineDetail & { id: MinculturaLine })[] = [
+  {
+    id: "CIRCULACION",
+    label: "Circulación de profesionales de la música",
+    desc: "Apoyo a giras, conciertos, encuentros creativos, composición, investigación e intercambio profesional internacional.",
+    focus: "Impacto artístico, sostenibilidad del proyecto, capacidad de generar redes, actividades de formación y pertinencia de la movilidad.",
+    detailedAuditGuide: "Se evalúa: (a) Impacto artístico y carácter sostenible del proyecto — relevancia para el desarrollo de lenguajes, géneros, territorios o escenas musicales. (b) Capacidad de generar redes duraderas en el tiempo. (c) Actividades de formación o mediación asociadas (cursos, talleres, clases magistrales, mesas redondas). (d) Pertinencia de la movilidad y coherencia del itinerario/cronograma. (e) Antecedentes del/la postulante y del proyecto.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a la Circulación de Profesionales de la Música",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PROGRAMACION",
+    label: "Programación musical",
+    desc: "Para festivales, ferias, mercados, salas, escuelas, orquestas o coros que quieran invitar profesionales de la música.",
+    focus: "Calidad de la programación propuesta, trayectoria de la institución, alcance e impacto de las actividades de intercambio.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia y calidad de la programación propuesta — artistas invitados, actividades e integración con la comunidad local. (b) Trayectoria de la institución organizadora — antecedentes del festival, feria, sala o emprendimiento cultural. (c) Alcance e impacto esperado de las actividades de intercambio. (d) Capacidad de gestión y cofinanciamiento del proyecto. (e) Plan de comunicación y difusión de la programación.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a la Programación Musical",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "RESIDENCIAS_ARTISTAS",
+    label: "Residencias para artistas e investigadores",
+    desc: "Desarrollo de trabajos creativos o de investigación musical junto a una institución o grupo anfitrión (mín. 3 semanas).",
+    focus: "Calidad de la propuesta creativa o de investigación, pertinencia de la institución anfitriona y duración mínima de la residencia.",
+    detailedAuditGuide: "Se evalúa: (a) Calidad y solidez de la propuesta de trabajo creativo o de investigación. (b) Pertinencia y trayectoria de la institución o grupo musical anfitrión. (c) Duración mínima de 3 semanas de la residencia. (d) Fundamentación de los objetivos y resultados esperados. (e) Antecedentes del/la postulante y vinculación con la propuesta.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a Artistas e Investigadores para Residencias",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "RESIDENCIAS_INSTITUCIONES",
+    label: "Residencias para instituciones",
+    desc: "Para instituciones públicas o privadas que quieran invitar profesionales de la música a realizar trabajos de creación o investigación.",
+    focus: "Trayectoria de la institución, calidad del programa de residencia, condiciones de recepción y plan de actividades.",
+    detailedAuditGuide: "Se evalúa: (a) Trayectoria y solidez de la institución convocante. (b) Calidad del programa de residencia propuesto — plan de actividades, duración mínima de 3 semanas, condiciones de recepción (alojamiento, espacios de trabajo). (c) Pertinencia del/la profesional invitado en relación al programa. (d) Impacto esperado en la comunidad musical local. (e) Capacidad de cofinanciamiento y sostenibilidad del programa.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a Instituciones para Residencias",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "ESPECIALIZACION",
+    label: "Especialización y perfeccionamiento",
+    desc: "Estudios avanzados en ámbitos del saber y quehacer musical, institucionales o con maestros de la cultura popular.",
+    focus: "Pertinencia del plan de especialización, trayectoria del postulante, solidez institucional o del mentor y aplicación futura.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia del plan de especialización o perfeccionamiento para el desarrollo de la carrera del/la postulante. (b) Trayectoria y antecedentes del/la postulante — grado avanzado o experto en el área. (c) Solidez y prestigio de la institución o maestro/a seleccionado/a. (d) Aplicación futura de los conocimientos adquiridos en la escena iberoamericana. (e) Claridad del cronograma, costos y plan de financiamiento.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a la Especialización y el Perfeccionamiento Artístico y Técnico",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PROYECTOS_VIRTUALES",
+    label: "Proyectos virtuales",
+    desc: "Apoyo a proyectos musicales en entornos digitales que promuevan la cooperación e intercambio iberoamericano.",
+    focus: "Innovación digital, alcance iberoamericano, viabilidad técnica y propuesta de valor del proyecto virtual.",
+    detailedAuditGuide: "Se evalúa: (a) Innovación y calidad de la propuesta en entorno digital. (b) Alcance iberoamericano del proyecto y capacidad de generar vínculos entre países. (c) Viabilidad técnica y presupuestaria del proyecto virtual. (d) Propuesta de valor para la comunidad musical iberoamericana. (e) Antecedentes del equipo en proyectos digitales o virtuales.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a Proyectos Virtuales",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PROMOCION_REPERTORIO",
+    label: "Promoción del repertorio iberoamericano",
+    desc: "Apoyo a proyectos que difundan y promuevan el repertorio musical iberoamericano en cualquier formato o plataforma.",
+    focus: "Calidad del repertorio seleccionado, estrategia de difusión, impacto en la visibilidad de la música iberoamericana.",
+    detailedAuditGuide: "Se evalúa: (a) Calidad y representatividad del repertorio iberoamericano seleccionado. (b) Estrategia de difusión y promoción propuesta. (c) Impacto esperado en la visibilidad de la música de la región. (d) Antecedentes del/la postulante en proyectos de difusión musical. (e) Plan de sostenibilidad y alcance del proyecto.",
+    sources: "Bases Ibermúsicas 2026 — Ayuda a la Promoción del Repertorio Iberoamericano",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "MID_ATLANTIC",
+    label: "Especial Mid Atlantic Arts",
+    desc: "Convocatoria especial para fortalecer la presencia de artistas iberoamericanos en Estados Unidos, con apoyo para visas de trabajo.",
+    focus: "Pertinencia del proyecto en EE.UU., gestión de visa de trabajo, impacto en la proyección internacional del/la artista.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia del proyecto artístico en territorio estadounidense. (b) Gestión y obtención de visa de trabajo (P-1, O-1 u otras). (c) Impacto esperado en la proyección internacional del/la artista o agrupación. (d) Cofinanciamiento por instituciones asociadas (honorarios y contratación). (e) Antecedentes del/la postulante y del proyecto.",
+    sources: "Bases Ibermúsicas 2026 — Convocatoria Especial Ibermúsicas – Mid Atlantic Arts",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "EMILIA_ROMAGNA",
+    label: "Especial Emilia-Romagna",
+    desc: "Convocatoria especial para conectar artistas y escenas musicales iberoamericanas con la región de Emilia-Romagna, Italia.",
+    focus: "Vinculación con la escena musical de Emilia-Romagna, propuesta de intercambio, impacto bilateral y viabilidad del proyecto.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia de la vinculación con la escena musical de Emilia-Romagna (Italia). (b) Calidad de la propuesta de intercambio bilateral. (c) Impacto esperado en ambas regiones. (d) Viabilidad logística y presupuestaria del proyecto. (e) Antecedentes del/la postulante y del proyecto.",
+    sources: "Bases Ibermúsicas 2026 — Convocatoria Especial Ibermúsicas Emilia-Romagna",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "ARTS_COUNCIL_ENGLAND",
+    label: "Especial Arts Council England",
+    desc: "Convocatoria para fortalecer vínculos musicales entre Iberoamérica e Inglaterra. Abierta hasta el 31 de julio.",
+    focus: "Vínculo con la escena inglesa, calidad artística, impacto bilateral y viabilidad del proyecto de intercambio.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia y calidad del vínculo propuesto con la escena musical inglesa. (b) Impacto bilateral esperado del proyecto. (c) Trayectoria artística del/la postulante. (d) Viabilidad logística y presupuestaria. (e) Plan de actividades y cronograma detallado.",
+    sources: "Bases Ibermúsicas 2026 — Convocatoria Especial Ibermúsicas + Arts Council England",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "CPLP",
+    label: "Especial CPLP",
+    desc: "Convocatoria especial para viajes por la música de los países de lengua oficial portuguesa (CPLP).",
+    focus: "Vinculación con países de la CPLP, propuesta de intercambio musical, impacto en la comunidad lusófona.",
+    detailedAuditGuide: "Se evalúa: (a) Pertinencia de la vinculación con países de la Comunidad de Países de Lengua Portuguesa (CPLP). (b) Calidad de la propuesta de intercambio musical. (c) Impacto esperado en la comunidad lusófona iberoamericana. (d) Viabilidad logística y presupuestaria. (e) Antecedentes del/la postulante en proyectos de cooperación cultural.",
+    sources: "Bases Ibermúsicas 2026 — Convocatoria Especial Ibermúsicas CPLP",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PREMIO_BRASIL",
+    label: "Premio Brasil Ibermúsicas",
+    desc: "Premio especial de Ibermúsicas destinado a compositores y proyectos musicales con foco en Brasil.",
+    focus: "Excelencia artística, vinculación con Brasil, originalidad de la propuesta y solidez del proyecto.",
+    detailedAuditGuide: "Se evalúa: (a) Excelencia artística y originalidad de la propuesta. (b) Vinculación y pertinencia del proyecto con Brasil. (c) Trayectoria del/la postulante en el ámbito musical. (d) Claridad de los objetivos y resultados esperados. (e) Plan de difusión y sostenibilidad.",
+    sources: "Bases Ibermúsicas 2026 — Premio Brasil Ibermúsicas",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "CREACION_CANCIONES",
+    label: "Creación de canciones",
+    desc: "Premio Ibermúsicas a la creación de canciones en cualquier género y estilo musical iberoamericano.",
+    focus: "Originalidad de la canción, calidad de la composición, representatividad iberoamericana y factibilidad de producción.",
+    detailedAuditGuide: "Se evalúa: (a) Originalidad y calidad de la canción propuesta. (b) Representatividad de la estética iberoamericana en la obra. (c) Trayectoria del/la compositor/a. (d) Factibilidad de producción y circulación de la obra. (e) Claridad de la propuesta y fundamentación artística.",
+    sources: "Bases Ibermúsicas 2026 — Premio Ibermúsicas a la Creación de Canciones",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "CANCIONES_INFANCIAS",
+    label: "Canciones para las infancias",
+    desc: "Premio Ibermúsicas a la creación de canciones para las infancias, con enfoque en contenido educativo y artístico.",
+    focus: "Adecuación al público infantil, valor pedagógico, calidad musical y originalidad de la propuesta.",
+    detailedAuditGuide: "Se evalúa: (a) Adecuación de la propuesta al público infantil y las infancias. (b) Valor pedagógico y formativo del contenido. (c) Calidad musical y originalidad de la composición. (d) Trayectoria del/la compositor/a en música infantil. (e) Claridad de los objetivos y plan de circulación.",
+    sources: "Bases Ibermúsicas 2026 — Premio Ibermúsicas a la Creación de Canciones para las Infancias",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "COMPOSICION_SINFONICA",
+    label: "Composición para Orquesta Sinfónica",
+    desc: "Premio Ibermúsicas de composición de obra para Orquesta Sinfónica. Una obra ganadora por cada país miembro.",
+    focus: "Creatividad sinfónica, calidad compositiva, representatividad iberoamericana y factibilidad de estreno orquestal.",
+    detailedAuditGuide: "Se evalúa: (a) Creatividad y calidad de la obra sinfónica propuesta. (b) Representatividad de la estética iberoamericana en la composición. (c) Viabilidad técnica para ser interpretada por orquesta sinfónica. (d) Claridad de la partitura y materiales de orquesta. (e) Antecedentes del/la compositor/a en el ámbito sinfónico. Las obras ganadoras se estrenan en concierto especial por la Orquesta Sinfónica Nacional de Cuba o la Filarmónica Nacional de Venezuela, y pueden ser programadas en los demás países miembros.",
+    sources: "Bases Ibermúsicas 2026 — Premio Ibermúsicas de Composición de Obra para Orquesta Sinfónica",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  }
+];
+
 // Encouraging tips shown in Argentine custom culture slang/tone during loading
 const LOADING_PHRASES = [
   "Analizando la viabilidad de la propuesta para tu público objetivo...",
@@ -155,6 +332,8 @@ export default function App() {
   const [pdfBase64, setPdfBase64] = useState<string>("");
   const [destination, setDestination] = useState<Destination>("");
   const [intLine, setIntLine] = useState<IntLine>("");
+  const [fnaLine, setFnaLine] = useState<FnaLine>("");
+  const [minculturaLine, setMinculturaLine] = useState<MinculturaLine>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState<number>(0);
   const [result, setResult] = useState<string>("");
@@ -291,6 +470,16 @@ export default function App() {
       setErrorString("Si elegiste INT, necesitás seleccionar una línea de postulación específica para que evaluemos tu proyecto.");
       return;
     }
+    // If FNA is selected, require a specific line
+    if (destination === "FNA" && !fnaLine) {
+      setErrorString("Si elegiste FNA, necesitás seleccionar un concurso específico para que evaluemos tu proyecto.");
+      return;
+    }
+    // If Ministerio de Cultura is selected, require a specific Ibermúsicas line
+    if (destination === "Ministerio de Cultura" && !minculturaLine) {
+      setErrorString("Si elegiste Ministerio de Cultura, necesitás seleccionar una línea de Ibermúsicas específica para que evaluemos tu proyecto.");
+      return;
+    }
 
     // Check if quota is exhausted
     if (quota && quota.remaining <= 0) {
@@ -313,6 +502,8 @@ export default function App() {
           pdfBase64,
           destination,
           intLine,
+          fnaLine,
+          minculturaLine,
         }),
       });
 
@@ -393,6 +584,8 @@ export default function App() {
     setPdfBase64("");
     setDestination("");
     setIntLine("");
+    setFnaLine("");
+    setMinculturaLine("");
     setErrorString("");
   };
 
@@ -658,7 +851,12 @@ export default function App() {
                 01 // {file ? "✓ PDF CARGADO" : "SUBIR PDF"}
               </span>
               <span className={`px-3 py-3 font-bold transition-colors ${destination ? 'bg-[#dae122] text-neutral-900' : file ? 'bg-neutral-100 text-neutral-900' : 'bg-white text-neutral-400'}`}>
-                02 // {destination ? `✓ ${destination}${intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : ""}` : "CONVOCATORIA"}
+                02 // {destination ? `✓ ${destination}${
+                  intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : 
+                  fnaLine ? ` / ${FNA_LINES.find(l => l.id === fnaLine)?.label || fnaLine}` :
+                  minculturaLine ? ` / ${MINCULTURA_LINES.find(l => l.id === minculturaLine)?.label || minculturaLine}` :
+                  ""
+                }` : "CONVOCATORIA"}
               </span>
               <span className={`px-3 py-3 font-bold ${destination && file ? 'bg-neutral-950 text-[#dae122]' : 'bg-white text-neutral-400'}`}>
                 03 // DIAGNÓSTICO
@@ -766,6 +964,8 @@ export default function App() {
                         onClick={() => {
                           setDestination(dest.id);
                           if (dest.id !== "INT") setIntLine("");
+                          if (dest.id !== "FNA") setFnaLine("");
+                          if (dest.id !== "Ministerio de Cultura") setMinculturaLine("");
                         }}
                         className={`w-full p-4 rounded-none border transition-all duration-200 relative bg-white flex flex-col gap-2 cursor-pointer ${
                           isSelected 
@@ -870,6 +1070,120 @@ export default function App() {
                             </div>
                           </div>
                         )}
+
+                        {/* FNA sub-line selector (inside the card) */}
+                        {dest.id === "FNA" && isSelected && (
+                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                                CONCURSO FNA
+                              </span>
+                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                            </div>
+                            <div className="grid grid-cols-1 gap-1.5">
+                              {FNA_LINES.map((line) => {
+                                const isLineSelected = fnaLine === line.id;
+                                return (
+                                  <div
+                                    key={line.id}
+                                    onClick={() => setFnaLine(line.id)}
+                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                      isLineSelected 
+                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                          isLineSelected ? "bg-neutral-950" : "bg-white"
+                                        }`}>
+                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                        </span>
+                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
+                                          isLineSelected ? "font-extrabold" : "font-semibold"
+                                        }`}>
+                                          {line.label}
+                                        </span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveLineDetail(line);
+                                        }}
+                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
+                                      >
+                                        <Info className="w-2 h-2" /> VER LINEA
+                                      </button>
+                                    </div>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
+                                      {line.desc}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Ministerio de Cultura sub-line selector (inside the card) */}
+                        {dest.id === "Ministerio de Cultura" && isSelected && (
+                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                                LÍNEA IBERMÚSICAS
+                              </span>
+                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                            </div>
+                            <div className="grid grid-cols-1 gap-1.5 max-h-[280px] overflow-y-auto pr-1">
+                              {MINCULTURA_LINES.map((line) => {
+                                const isLineSelected = minculturaLine === line.id;
+                                return (
+                                  <div
+                                    key={line.id}
+                                    onClick={() => setMinculturaLine(line.id)}
+                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                      isLineSelected 
+                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                          isLineSelected ? "bg-neutral-950" : "bg-white"
+                                        }`}>
+                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                        </span>
+                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
+                                          isLineSelected ? "font-extrabold" : "font-semibold"
+                                        }`}>
+                                          {line.label}
+                                        </span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveLineDetail(line);
+                                        }}
+                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
+                                      >
+                                        <Info className="w-2 h-2" /> VER LINEA
+                                      </button>
+                                    </div>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
+                                      {line.desc}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -890,9 +1204,9 @@ export default function App() {
               <button
                 id="evaluate-btn"
                 onClick={handleEvaluate}
-                disabled={!pdfBase64 || !destination || (destination === "INT" && !intLine) || loading}
+                disabled={!pdfBase64 || !destination || (destination === "INT" && !intLine) || (destination === "FNA" && !fnaLine) || (destination === "Ministerio de Cultura" && !minculturaLine) || loading}
                 className={`group w-full md:w-auto px-10 py-3.5 rounded-none font-mono font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-3 border transition-all ${
-                  (!pdfBase64 || !destination || (destination === "INT" && !intLine) || loading)
+                  (!pdfBase64 || !destination || (destination === "INT" && !intLine) || (destination === "FNA" && !fnaLine) || (destination === "Ministerio de Cultura" && !minculturaLine) || loading)
                     ? "bg-neutral-100 cursor-not-allowed text-neutral-400 border-neutral-200"
                     : "bg-neutral-950 text-[#dae122] border-neutral-950 hover:bg-[#121212]/90"
                 }`}
@@ -982,7 +1296,12 @@ export default function App() {
                     REPORTE DIAGNÓSTICO GENERAL
                   </span>
                   <span className="text-[9px] uppercase font-mono font-bold tracking-widest px-2.5 py-1 bg-[#dae122] text-neutral-950 border border-neutral-950 rounded-none">
-                    DESTINO: {destination}{intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : ""}
+                    DESTINO: {destination}{
+                      intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` :
+                      fnaLine ? ` / ${FNA_LINES.find(l => l.id === fnaLine)?.label || fnaLine}` :
+                      minculturaLine ? ` / ${MINCULTURA_LINES.find(l => l.id === minculturaLine)?.label || minculturaLine}` :
+                      ""
+                    }
                   </span>
                 </div>
                 

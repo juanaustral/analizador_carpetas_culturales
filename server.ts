@@ -197,7 +197,7 @@ app.post("/api/feedback", async (req: Request, res: Response) => {
 // API Endpoint to evaluate cultural folders
 app.post("/api/evaluate", async (req: Request, res: Response) => {
   try {
-    const { pdfBase64, destination, intLine } = req.body;
+    const { pdfBase64, destination, intLine, fnaLine, minculturaLine } = req.body;
 
     if (!pdfBase64) {
       return res.status(400).json({ error: "Falta el archivo PDF en formato base64." });
@@ -229,9 +229,11 @@ Sos un Asistente de Evaluación de Proyectos Culturales Independientes en Argent
 
 # MATRIZ DE EVALUACIÓN SEGÚN LA OPCIÓN SELECCIONADA
 - Si el usuario eligió FNA (Fondo Nacional de las Artes): Evaluá con prioridad la fundamentación artística, la originalidad y la trayectoria.
+- Si el usuario eligió FNA con un concurso específico: Usá los criterios detallados para ese concurso (ver abajo).
 - Si el usuario eligió INT (Instituto Nacional del Teatro) sin una línea específica: Evaluá con prioridad la viabilidad técnica, operativa, el desglose de la puesta/gira y el público objetivo.
 - Si el usuario eligió INT con una línea específica: Usá los criterios detallados para esa línea (ver abajo).
 - Si el usuario eligió Ministerio de Cultura: Evaluá con prioridad el impacto sociocomunitario, la inclusión y el desarrollo territorial.
+- Si el usuario eligió Ministerio de Cultura con una línea de Ibermúsicas específica: Usá los criterios detallados para esa línea (ver abajo).
 
 # CRITERIOS ESPECÍFICOS POR LÍNEA DEL INT
 Cuando el usuario selecciona una línea de postulación del INT, evaluá usando estos criterios:
@@ -247,6 +249,46 @@ Cuando el usuario selecciona una línea de postulación del INT, evaluá usando 
 - **Gestión de Espacios Teatrales**: Evaluá (a) Impacto territorial — vinculación y relevancia cultural del espacio en su comunidad: funciones realizadas, actividades/talleres, redes de colaboración y asociativismo. (b) Proyecto y proyección del espacio — perfil artístico, fundamentación, programación tentativa, equipo de trabajo, infraestructura y equipamiento técnico. (c) Génesis y biografía de la sala — antecedentes de gestión, programación y actividades de los últimos 2 años.
 
 - **Movilidad Internacional**: Evaluá (a) Trayectoria, relevancia y alcance de la institución o formación donde fue aceptado/invitado. (b) Pertinencia de la actividad, objetivos y solidez de la contraprestación propuesta. (c) Desarrollo de capacidades — antecedentes de la persona y beneficio futuro de la acción. (d) Plan estratégico de comunicación y plan de prensa.
+
+# CRITERIOS ESPECÍFICOS POR CONCURSO DEL FNA
+Cuando el usuario selecciona un concurso específico del FNA, evaluá usando estos criterios:
+
+- **Premio de Composición ANBA-FNA 2026**: Evaluá (a) Cumplimiento de requisitos de admisibilidad — compositor argentino o naturalizado residente, mayor de 18 años, nacido a partir del 1/1/1986. (b) Originalidad e inédititud de la obra — no estrenada ni premiada previamente, registrada en Propiedad Intelectual. (c) Características técnicas — obra coral sin acompañamiento instrumental, duración entre 3 y 12 minutos, coro mixto a no más de 4 voces (divisi a due ocasional, hasta 8 partes reales). (d) Único compositor — no se admiten coautorías, arreglos ni transcripciones. (e) Documentación — partitura con seudónimo en todas las páginas, CV, DNI, autorizaciones de texto si corresponde, certificado de Propiedad Intelectual. (f) Premio — estreno por CONAMA en 2da mitad de 2026 + $2.000.000 + diploma.
+
+- **Concurso Valoración Patrimonial 2026**: Evaluá (a) Pertinencia del sitio seleccionado — relevancia histórica, arquitectónica y cultural del cementerio, templo o lugar sagrado. (b) Metodología de trabajo — plan de registro, documentación y conservación propuesto. (c) Impacto comunitario y vinculación con actores locales. (d) Viabilidad técnica y presupuestaria del proyecto. (e) Antecedentes del equipo de trabajo en patrimonio cultural.
+
+# CRITERIOS ESPECÍFICOS POR LÍNEA DE IBERMÚSICAS (Ministerio de Cultura)
+Cuando el usuario selecciona una línea de Ibermúsicas, evaluá usando estos criterios:
+
+- **Circulación de profesionales de la música**: Evaluá (a) Impacto artístico y carácter sostenible del proyecto — relevancia para el desarrollo de lenguajes, géneros, territorios o escenas musicales. (b) Capacidad de generar redes duraderas en el tiempo. (c) Actividades de formación o mediación asociadas (cursos, talleres, clases magistrales, mesas redondas). (d) Pertinencia de la movilidad y coherencia del itinerario/cronograma. (e) Antecedentes del/la postulante y del proyecto.
+
+- **Programación musical**: Evaluá (a) Pertinencia y calidad de la programación propuesta — artistas invitados, actividades e integración con la comunidad local. (b) Trayectoria de la institución organizadora — antecedentes del festival, feria, sala o emprendimiento cultural. (c) Alcance e impacto esperado de las actividades de intercambio. (d) Capacidad de gestión y cofinanciamiento del proyecto. (e) Plan de comunicación y difusión.
+
+- **Residencias para artistas e investigadores**: Evaluá (a) Calidad y solidez de la propuesta de trabajo creativo o de investigación. (b) Pertinencia y trayectoria de la institución o grupo musical anfitrión. (c) Duración mínima de 3 semanas de la residencia. (d) Fundamentación de los objetivos y resultados esperados. (e) Antecedentes del/la postulante y vinculación con la propuesta.
+
+- **Residencias para instituciones**: Evaluá (a) Trayectoria y solidez de la institución convocante. (b) Calidad del programa de residencia propuesto — plan de actividades, duración mínima de 3 semanas, condiciones de recepción. (c) Pertinencia del/la profesional invitado en relación al programa. (d) Impacto esperado en la comunidad musical local. (e) Capacidad de cofinanciamiento y sostenibilidad.
+
+- **Especialización y perfeccionamiento**: Evaluá (a) Pertinencia del plan de especialización para el desarrollo de la carrera del/la postulante. (b) Trayectoria — grado avanzado o experto en el área. (c) Solidez y prestigio de la institución o maestro/a seleccionado/a. (d) Aplicación futura de los conocimientos en la escena iberoamericana. (e) Claridad del cronograma, costos y plan de financiamiento.
+
+- **Proyectos virtuales**: Evaluá (a) Innovación y calidad de la propuesta en entorno digital. (b) Alcance iberoamericano y capacidad de generar vínculos entre países. (c) Viabilidad técnica y presupuestaria. (d) Propuesta de valor para la comunidad musical iberoamericana. (e) Antecedentes del equipo en proyectos digitales.
+
+- **Promoción del repertorio iberoamericano**: Evaluá (a) Calidad y representatividad del repertorio seleccionado. (b) Estrategia de difusión y promoción. (c) Impacto esperado en la visibilidad de la música de la región. (d) Antecedentes del/la postulante en difusión musical. (e) Plan de sostenibilidad y alcance.
+
+- **Especial Mid Atlantic Arts**: Evaluá (a) Pertinencia del proyecto en EE.UU. (b) Gestión de visa de trabajo (P-1, O-1 u otras). (c) Impacto en la proyección internacional del/la artista. (d) Cofinanciamiento con instituciones asociadas. (e) Antecedentes del/la postulante.
+
+- **Especial Emilia-Romagna**: Evaluá (a) Vinculación con la escena musical de Emilia-Romagna, Italia. (b) Calidad de la propuesta de intercambio bilateral. (c) Impacto esperado en ambas regiones. (d) Viabilidad logística y presupuestaria. (e) Antecedentes del/la postulante.
+
+- **Especial Arts Council England**: Evaluá (a) Pertinencia del vínculo con la escena musical inglesa. (b) Impacto bilateral esperado. (c) Trayectoria artística del/la postulante. (d) Viabilidad logística y presupuestaria. (e) Plan de actividades y cronograma detallado. Abierta hasta el 31 de julio.
+
+- **Especial CPLP**: Evaluá (a) Vinculación con países de la Comunidad de Países de Lengua Portuguesa. (b) Calidad de la propuesta de intercambio musical. (c) Impacto en la comunidad lusófona. (d) Viabilidad logística y presupuestaria. (e) Antecedentes en proyectos de cooperación cultural.
+
+- **Premio Brasil Ibermúsicas**: Evaluá (a) Excelencia artística y originalidad. (b) Vinculación y pertinencia del proyecto con Brasil. (c) Trayectoria del/la postulante. (d) Claridad de objetivos y resultados. (e) Plan de difusión y sostenibilidad.
+
+- **Creación de canciones**: Evaluá (a) Originalidad y calidad de la canción. (b) Representatividad iberoamericana. (c) Trayectoria del/la compositor/a. (d) Factibilidad de producción y circulación. (e) Claridad de la propuesta artística.
+
+- **Canciones para las infancias**: Evaluá (a) Adecuación al público infantil. (b) Valor pedagógico y formativo. (c) Calidad musical y originalidad. (d) Trayectoria en música infantil. (e) Claridad de objetivos y plan de circulación.
+
+- **Composición para Orquesta Sinfónica**: Evaluá (a) Creatividad y calidad de la obra sinfónica. (b) Representatividad iberoamericana. (c) Viabilidad técnica para orquesta sinfónica. (d) Claridad de la partitura y materiales. (e) Antecedentes del/la compositor/a en el ámbito sinfónico. Una obra ganadora por país miembro. Estreno por Orquesta Sinfónica Nacional de Cuba o Filarmónica Nacional de Venezuela.
 
 # REGLA CRUCIAL
 NO reescribas ni corrijas el texto original del artista. Tu función es auditar y dar feedback.
@@ -283,7 +325,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
           },
         },
         {
-          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}${intLine ? `, línea específica: ${intLine}` : ""}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
+          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}${intLine ? `, línea específica del INT: ${intLine}` : ""}${fnaLine ? `, concurso específico del FNA: ${fnaLine}` : ""}${minculturaLine ? `, línea específica de Ibermúsicas: ${minculturaLine}` : ""}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
         },
       ],
       config: {

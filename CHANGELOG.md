@@ -1,6 +1,22 @@
 # Changelog — Analizador de Carpetas Culturales
 
-## [1.3] — 2026-06-12
+## [1.4] — 2026-07-04
+
+### Nuevas convocatorias FNA
+- Agregado tipo `FnaLine` con 2 concursos: Composición ANBA-FNA 2026 y Valoración Patrimonial 2026
+- Selector de concurso FNA dentro de la card del organismo
+- Criterios específicos de evaluación extraídos del reglamento oficial ANBA-FNA (PDF descargado del sitio de argentina.gob.ar)
+
+### Nuevas convocatorias Ibermúsicas (Ministerio de Cultura)
+- Agregado tipo `MinculturaLine` con 15 líneas de convocatoria Ibermúsicas 2026
+- Selector de línea Ibermúsicas dentro de la card del Ministerio de Cultura
+- 15 líneas: Circulación, Programación, Residencias (artistas e instituciones), Especialización, Proyectos Virtuales, Promoción del Repertorio, Especial Mid Atlantic Arts, Emilia-Romagna, Arts Council England, CPLP, Premio Brasil, Creación de Canciones, Canciones para las Infancias, Composición para Orquesta Sinfónica
+- Criterios específicos de evaluación extraídos de las bases oficiales de ibermusicas.org
+
+### Backend
+- server.ts actualizado: acepta `fnaLine` y `minculturaLine` en el request
+- System prompt ampliado con criterios detallados para cada concurso FNA y cada línea Ibermúsicas
+- Prompt de usuario incluye el nombre de la línea específica seleccionada
 
 ### SEO y Meta
 - Index.html: meta description, keywords, Open Graph tags, Twitter Card, canonical URL
