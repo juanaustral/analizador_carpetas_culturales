@@ -26,8 +26,26 @@ import {
   Mail
 } from "lucide-react";
 
-type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "";
+type Destination = "FNA" | "INT" | "Ministerio de Cultura" | "GENERAL" | "";
 type IntLine = "PRODUCCION" | "CIRCULACION" | "EVENTOS" | "FESTIVALES" | "ESPACIOS" | "MOVILIDAD" | "";
+type FnaLine = "COMPOSICION_ANBA" | "VALORACION_PATRIMONIAL" | "";
+type MinculturaLine = 
+  | "CIRCULACION" 
+  | "PROGRAMACION" 
+  | "RESIDENCIAS_ARTISTAS" 
+  | "RESIDENCIAS_INSTITUCIONES" 
+  | "ESPECIALIZACION" 
+  | "PROYECTOS_VIRTUALES" 
+  | "PROMOCION_REPERTORIO" 
+  | "MID_ATLANTIC" 
+  | "EMILIA_ROMAGNA" 
+  | "ARTS_COUNCIL_ENGLAND" 
+  | "CPLP" 
+  | "PREMIO_BRASIL" 
+  | "CREACION_CANCIONES" 
+  | "CANCIONES_INFANCIAS" 
+  | "COMPOSICION_SINFONICA" 
+  | "";
 
 interface DestinationDetail {
   id: "FNA" | "INT" | "Ministerio de Cultura";
@@ -41,6 +59,16 @@ interface DestinationDetail {
 }
 
 const DESTINATIONS: DestinationDetail[] = [
+  {
+    id: "GENERAL",
+    label: "Analisis General (sin fondo especifico)",
+    org: "GENERAL",
+    focus: "Analisis global de claridad, coherencia y completitud del proyecto cultural sin criterios de una convocatoria especifica.",
+    desc: "Para obtener una devolucion general sobre la claridad, estructura y completitud de tu carpeta sin enfocarte en los criterios de un fondo en particular.",
+    sources: "Directrices generales de formulacion de proyectos culturales",
+    sourcesUrl: "https://www.argentina.gob.ar/cultura",
+    detailedAuditGuide: "La evaluacion se centra en la claridad expositiva, coherencia interna entre objetivos y actividades, completitud de la informacion (presupuesto, cronograma, equipo), y calidad general de la presentacion del proyecto cultural."
+  },
   {
     id: "FNA",
     label: "Fondo Nacional de las Artes",
@@ -216,11 +244,172 @@ const CHANGELOG_DATA = [
   }
 ];
 
+const FNA_LINES: (IntLineDetail & { id: FnaLine })[] = [
+  {
+    id: "COMPOSICION_ANBA",
+    label: "Premio de Composicion ANBA-FNA 2026",
+    desc: "Obras corales ineditas sin acompanamiento instrumental, de 3 a 12 minutos, para coro mixto a no mas de 4 voces.",
+    focus: "Originalidad de la composicion, calidad de la partitura, cumplimiento de requisitos formales (plazas, duracion, voces), seudonimo y documentacion legal.",
+    detailedAuditGuide: "Se evalua: (a) Cumplimiento de requisitos de admisibilidad: compositor argentino o naturalizado residente, mayor de 18 anos, nacido a partir del 1/1/1986. (b) Originalidad e inedititud de la obra: no estrenada ni premiada previamente, registrada en Propiedad Intelectual. (c) Caracteristicas tecnicas: obra coral sin acompanamiento instrumental, duracion entre 3 y 12 minutos, coro mixto a no mas de 4 voces. (d) Unico compositor: no se admiten coautorias, arreglos ni transcripciones. (e) Documentacion: partitura con seudonimo en todas las paginas, CV, DNI, autorizaciones de texto si corresponde, certificado de Propiedad Intelectual. (f) Premio: estreno por CONAMA en 2da mitad de 2026 + $2.000.000 + diploma.",
+    sources: "Reglamento del Premio de Composicion ANBA-FNA 2026 — Academia Nacional de Bellas Artes y Fondo Nacional de las Artes",
+    sourcesUrl: "https://www.argentina.gob.ar/noticias/premio-de-composicion-anba-fna-2026"
+  },
+  {
+    id: "VALORACION_PATRIMONIAL",
+    label: "Concurso Valoracion Patrimonial 2026",
+    desc: "Concurso de Valoracion Patrimonial de Cementerios, Templos y Lugares Sagrados. Para proyectos de puesta en valor y registro patrimonial.",
+    focus: "Pertinencia patrimonial, metodologia de trabajo, impacto comunitario y viabilidad tecnica del proyecto de valoracion.",
+    detailedAuditGuide: "Se evalua: (a) Pertinencia del sitio seleccionado: relevancia historica, arquitectonica y cultural del cementerio, templo o lugar sagrado. (b) Metodologia de trabajo: plan de registro, documentacion y conservacion propuesto. (c) Impacto comunitario y vinculacion con actores locales. (d) Viabilidad tecnica y presupuestaria del proyecto. (e) Antecedentes del equipo de trabajo en patrimonio cultural.",
+    sources: "Bases del Concurso de Valoracion Patrimonial de Cementerios, Templos y Lugares Sagrados 2026 — Fondo Nacional de las Artes",
+    sourcesUrl: "https://www.argentina.gob.ar/cultura/fna/concursos"
+  }
+];
+
+const MINCULTURA_LINES: (IntLineDetail & { id: MinculturaLine })[] = [
+  {
+    id: "CIRCULACION",
+    label: "Circulacion de profesionales de la musica",
+    desc: "Apoyo a giras, conciertos, encuentros creativos, composicion, investigacion e intercambio profesional internacional.",
+    focus: "Impacto artistico, sostenibilidad del proyecto, capacidad de generar redes, actividades de formacion y pertinencia de la movilidad.",
+    detailedAuditGuide: "Se evalua: (a) Impacto artistico y caracter sostenible del proyecto. (b) Capacidad de generar redes duraderas en el tiempo. (c) Actividades de formacion o mediacion asociadas. (d) Pertinencia de la movilidad y coherencia del itinerario. (e) Antecedentes del postulante.",
+    sources: "Bases Ibermusicas 2026 — Circulacion de Profesionales de la Musica",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PROGRAMACION",
+    label: "Programacion musical",
+    desc: "Para festivales, ferias, mercados, salas, escuelas, orquestas o coros que quieran invitar profesionales de la musica.",
+    focus: "Calidad de la programacion, trayectoria de la institucion, alcance e impacto de las actividades de intercambio.",
+    detailedAuditGuide: "Se evalua: (a) Pertinencia y calidad de la programacion propuesta. (b) Trayectoria de la institucion organizadora. (c) Alcance e impacto esperado de las actividades de intercambio. (d) Capacidad de gestion y cofinanciamiento. (e) Plan de comunicacion y difusion.",
+    sources: "Bases Ibermusicas 2026 — Programacion Musical",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "RESIDENCIAS_ARTISTAS",
+    label: "Residencias para artistas e investigadores",
+    desc: "Desarrollo de trabajos creativos o de investigacion musical junto a una institucion o grupo anfitrion (min. 3 semanas).",
+    focus: "Calidad de la propuesta creativa, pertinencia de la institucion anfitriona y duracion minima de la residencia.",
+    detailedAuditGuide: "Se evalua: (a) Calidad y solidez de la propuesta de trabajo creativo o de investigacion. (b) Pertinencia y trayectoria de la institucion o grupo anfitrion. (c) Duracion minima de 3 semanas. (d) Fundamentacion de los objetivos y resultados esperados. (e) Antecedentes del postulante.",
+    sources: "Bases Ibermusicas 2026 — Residencias para Artistas e Investigadores",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "RESIDENCIAS_INSTITUCIONES",
+    label: "Residencias para instituciones",
+    desc: "Para instituciones publicas o privadas que quieran invitar profesionales de la musica a realizar trabajos de creacion o investigacion.",
+    focus: "Trayectoria de la institucion, calidad del programa de residencia, condiciones de recepcion y plan de actividades.",
+    detailedAuditGuide: "Se evalua: (a) Trayectoria y solidez de la institucion convocante. (b) Calidad del programa de residencia propuesto. (c) Pertinencia del profesional invitado. (d) Impacto esperado en la comunidad musical local. (e) Capacidad de cofinanciamiento.",
+    sources: "Bases Ibermusicas 2026 — Residencias para Instituciones",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "ESPECIALIZACION",
+    label: "Especializacion y perfeccionamiento",
+    desc: "Estudios avanzados en ambitos del saber y quehacer musical, institucionales o con maestros de la cultura popular.",
+    focus: "Pertinencia del plan de especializacion, trayectoria del postulante, solidez institucional o del mentor.",
+    detailedAuditGuide: "Se evalua: (a) Pertinencia del plan de especializacion. (b) Trayectoria del postulante. (c) Solidez y prestigio de la institucion o maestro seleccionado. (d) Aplicacion futura de los conocimientos. (e) Claridad del cronograma y plan de financiamiento.",
+    sources: "Bases Ibermusicas 2026 — Especializacion y Perfeccionamiento",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PROYECTOS_VIRTUALES",
+    label: "Proyectos virtuales",
+    desc: "Apoyo a proyectos musicales en entornos digitales que promuevan la cooperacion e intercambio iberoamericano.",
+    focus: "Innovacion digital, alcance iberoamericano, viabilidad tecnica y propuesta de valor.",
+    detailedAuditGuide: "Se evalua: (a) Innovacion y calidad de la propuesta en entorno digital. (b) Alcance iberoamericano. (c) Viabilidad tecnica y presupuestaria. (d) Propuesta de valor para la comunidad musical. (e) Antecedentes del equipo.",
+    sources: "Bases Ibermusicas 2026 — Proyectos Virtuales",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PROMOCION_REPERTORIO",
+    label: "Promocion del repertorio iberoamericano",
+    desc: "Apoyo a proyectos que difundan y promuevan el repertorio musical iberoamericano.",
+    focus: "Calidad del repertorio, estrategia de difusion, impacto en la visibilidad de la musica iberoamericana.",
+    detailedAuditGuide: "Se evalua: (a) Calidad y representatividad del repertorio seleccionado. (b) Estrategia de difusion y promocion. (c) Impacto esperado en la visibilidad de la musica regional. (d) Antecedentes del postulante. (e) Plan de sostenibilidad.",
+    sources: "Bases Ibermusicas 2026 — Promocion del Repertorio Iberoamericano",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "MID_ATLANTIC",
+    label: "Especial Mid Atlantic Arts",
+    desc: "Convocatoria especial para fortalecer la presencia de artistas iberoamericanos en Estados Unidos, con apoyo para visas.",
+    focus: "Proyecto en EE.UU., gestion de visa, impacto en la proyeccion internacional.",
+    detailedAuditGuide: "Se evalua: (a) Pertinencia del proyecto en EE.UU. (b) Gestion de visa de trabajo. (c) Impacto en la proyeccion internacional. (d) Cofinanciamiento. (e) Antecedentes del postulante.",
+    sources: "Bases Ibermusicas 2026 — Especial Mid Atlantic Arts",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "EMILIA_ROMAGNA",
+    label: "Especial Emilia-Romagna",
+    desc: "Convocatoria para conectar artistas iberoamericanos con la escena musical de Emilia-Romagna, Italia.",
+    focus: "Vinculacion con Emilia-Romagna, propuesta de intercambio bilateral, viabilidad.",
+    detailedAuditGuide: "Se evalua: (a) Vinculacion con la escena musical de Emilia-Romagna. (b) Calidad de la propuesta de intercambio. (c) Impacto bilateral. (d) Viabilidad logistica y presupuestaria. (e) Antecedentes del postulante.",
+    sources: "Bases Ibermusicas 2026 — Especial Emilia-Romagna",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "ARTS_COUNCIL_ENGLAND",
+    label: "Especial Arts Council England",
+    desc: "Convocatoria para fortalecer vinculos musicales entre Iberoamerica e Inglaterra. Abierta hasta el 31 de julio.",
+    focus: "Vinculo con Inglaterra, calidad artistica, impacto bilateral.",
+    detailedAuditGuide: "Se evalua: (a) Pertinencia del vinculo con Inglaterra. (b) Impacto bilateral. (c) Trayectoria artistica. (d) Viabilidad logistica. (e) Plan de actividades y cronograma.",
+    sources: "Bases Ibermusicas 2026 — Especial Arts Council England",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "CPLP",
+    label: "Especial CPLP",
+    desc: "Convocatoria para viajes por la musica de los paises de lengua oficial portuguesa.",
+    focus: "Vinculacion con CPLP, intercambio musical, impacto en la comunidad lusofona.",
+    detailedAuditGuide: "Se evalua: (a) Vinculacion con paises CPLP. (b) Calidad de la propuesta de intercambio. (c) Impacto en la comunidad lusofona. (d) Viabilidad. (e) Antecedentes.",
+    sources: "Bases Ibermusicas 2026 — Especial CPLP",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "PREMIO_BRASIL",
+    label: "Premio Brasil Ibermusicas",
+    desc: "Premio especial destinado a compositores y proyectos musicales con foco en Brasil.",
+    focus: "Excelencia artistica, vinculacion con Brasil, originalidad.",
+    detailedAuditGuide: "Se evalua: (a) Excelencia artistica y originalidad. (b) Vinculacion con Brasil. (c) Trayectoria del postulante. (d) Claridad de objetivos. (e) Plan de difusion.",
+    sources: "Bases Ibermusicas 2026 — Premio Brasil Ibermusicas",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "CREACION_CANCIONES",
+    label: "Creacion de canciones",
+    desc: "Premio Ibermusicas a la creacion de canciones en cualquier genero y estilo musical iberoamericano.",
+    focus: "Originalidad, calidad de la composicion, representatividad iberoamericana.",
+    detailedAuditGuide: "Se evalua: (a) Originalidad y calidad de la cancion. (b) Representatividad iberoamericana. (c) Trayectoria del compositor. (d) Factibilidad de produccion y circulacion. (e) Claridad de la propuesta.",
+    sources: "Bases Ibermusicas 2026 — Creacion de Canciones",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "CANCIONES_INFANCIAS",
+    label: "Canciones para las infancias",
+    desc: "Premio Ibermusicas a la creacion de canciones para las infancias, con enfoque educativo y artistico.",
+    focus: "Adecuacion al publico infantil, valor pedagogico, calidad musical.",
+    detailedAuditGuide: "Se evalua: (a) Adecuacion al publico infantil. (b) Valor pedagogico y formativo. (c) Calidad musical y originalidad. (d) Trayectoria en musica infantil. (e) Plan de circulacion.",
+    sources: "Bases Ibermusicas 2026 — Canciones para las Infancias",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  },
+  {
+    id: "COMPOSICION_SINFONICA",
+    label: "Composicion para Orquesta Sinfonica",
+    desc: "Premio Ibermusicas de composicion para Orquesta Sinfonica. Una obra ganadora por cada pais miembro.",
+    focus: "Creatividad sinfonica, calidad compositiva, factibilidad de estreno orquestal.",
+    detailedAuditGuide: "Se evalua: (a) Creatividad y calidad de la obra sinfonica. (b) Representatividad iberoamericana. (c) Viabilidad tecnica para orquesta sinfonica. (d) Claridad de la partitura. (e) Antecedentes en el ambito sinfonico.",
+    sources: "Bases Ibermusicas 2026 — Composicion para Orquesta Sinfonica",
+    sourcesUrl: "https://www.ibermusicas.org/convocatorias/"
+  }
+];
+
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [pdfBase64, setPdfBase64] = useState<string>("");
   const [destination, setDestination] = useState<Destination>("");
   const [intLine, setIntLine] = useState<IntLine>("");
+  const [fnaLine, setFnaLine] = useState<FnaLine>("");
+  const [minculturaLine, setMinculturaLine] = useState<MinculturaLine>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState<number>(0);
   const [result, setResult] = useState<string>("");
@@ -356,6 +545,16 @@ export default function App() {
     // If INT is selected, require a specific line
     if (destination === "INT" && !intLine) {
       setErrorString("Si elegiste INT, necesitás seleccionar una línea de postulación específica para que evaluemos tu proyecto.");
+      return;
+    }
+    // If FNA is selected, require a specific line
+    if (destination === "FNA" && !fnaLine) {
+      setErrorString("Si elegiste FNA, necesitás seleccionar un concurso específico para que evaluemos tu proyecto.");
+      return;
+    }
+    // If Ministerio de Cultura is selected, require a specific Ibermúsicas line
+    if (destination === "Ministerio de Cultura" && !minculturaLine) {
+      setErrorString("Si elegiste Ministerio de Cultura, necesitás seleccionar una línea de Ibermúsicas específica para que evaluemos tu proyecto.");
       return;
     }
 
@@ -1076,9 +1275,9 @@ export default function App() {
               <button
                 id="evaluate-btn"
                 onClick={handleEvaluate}
-                disabled={!pdfBase64 || !destination || (destination === "INT" && !intLine) || loading}
+                disabled={!pdfBase64 || !destination || (destination === "INT" && !intLine) || (destination === "FNA" && !fnaLine) || (destination === "Ministerio de Cultura" && !minculturaLine) || loading}
                 className={`group w-full md:w-auto px-10 py-3.5 rounded-none font-mono font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-3 border transition-all ${
-                  (!pdfBase64 || !destination || (destination === "INT" && !intLine) || loading)
+                  (!pdfBase64 || !destination || (destination === "INT" && !intLine) || (destination === "FNA" && !fnaLine) || (destination === "Ministerio de Cultura" && !minculturaLine) || loading)
                     ? "bg-neutral-100 cursor-not-allowed text-neutral-400 border-neutral-200"
                     : "bg-neutral-950 text-[#dae122] border-neutral-950 hover:bg-[#121212]/90"
                 }`}

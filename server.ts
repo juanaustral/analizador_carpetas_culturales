@@ -197,7 +197,7 @@ app.post("/api/feedback", async (req: Request, res: Response) => {
 // API Endpoint to evaluate cultural folders
 app.post("/api/evaluate", async (req: Request, res: Response) => {
   try {
-    const { pdfBase64, destination, intLine } = req.body;
+    const { pdfBase64, destination, intLine, fnaLine, minculturaLine } = req.body;
 
     if (!pdfBase64) {
       return res.status(400).json({ error: "Falta el archivo PDF en formato base64." });
@@ -228,10 +228,13 @@ Sos un Asistente de Evaluación de Proyectos Culturales Independientes en Argent
 - Sé directo y ve al grano para optimizar tokens de salida.
 
 # MATRIZ DE EVALUACIÓN SEGÚN LA OPCIÓN SELECCIONADA
+- Si el usuario eligio GENERAL: Evaluá con prioridad la claridad expositiva, coherencia interna entre objetivos y actividades, completitud de la informacion y calidad general de la presentacion.
 - Si el usuario eligió FNA (Fondo Nacional de las Artes): Evaluá con prioridad la fundamentación artística, la originalidad y la trayectoria.
+- Si el usuario eligió FNA con un concurso específico: Usá los criterios detallados para ese concurso (ver abajo).
 - Si el usuario eligió INT (Instituto Nacional del Teatro) sin una línea específica: Evaluá con prioridad la viabilidad técnica, operativa, el desglose de la puesta/gira y el público objetivo.
 - Si el usuario eligió INT con una línea específica: Usá los criterios detallados para esa línea (ver abajo).
 - Si el usuario eligió Ministerio de Cultura: Evaluá con prioridad el impacto sociocomunitario, la inclusión y el desarrollo territorial.
+- Si el usuario eligió Ministerio de Cultura con una línea de Ibermúsicas específica: Usá los criterios detallados para esa línea (ver abajo).
 
 # CRITERIOS ESPECÍFICOS POR LÍNEA DEL INT
 Cuando el usuario selecciona una línea de postulación del INT, evaluá usando estos criterios:
@@ -247,6 +250,46 @@ Cuando el usuario selecciona una línea de postulación del INT, evaluá usando 
 - **Gestión de Espacios Teatrales**: Evaluá (a) Impacto territorial — vinculación y relevancia cultural del espacio en su comunidad: funciones realizadas, actividades/talleres, redes de colaboración y asociativismo. (b) Proyecto y proyección del espacio — perfil artístico, fundamentación, programación tentativa, equipo de trabajo, infraestructura y equipamiento técnico. (c) Génesis y biografía de la sala — antecedentes de gestión, programación y actividades de los últimos 2 años.
 
 - **Movilidad Internacional**: Evaluá (a) Trayectoria, relevancia y alcance de la institución o formación donde fue aceptado/invitado. (b) Pertinencia de la actividad, objetivos y solidez de la contraprestación propuesta. (c) Desarrollo de capacidades — antecedentes de la persona y beneficio futuro de la acción. (d) Plan estratégico de comunicación y plan de prensa.
+
+# CRITERIOS ESPECIFICOS POR CONCURSO DEL FNA
+Cuando el usuario selecciona un concurso especifico del FNA, evalua usando estos criterios:
+
+- **Premio de Composicion ANBA-FNA 2026**: Evalua (a) Cumplimiento de requisitos: compositor argentino o naturalizado residente, mayor de 18 anos, nacido a partir del 1/1/1986. (b) Originalidad: obra inedita, no estrenada ni premiada, registrada en Propiedad Intelectual. (c) Caracteristicas tecnicas: obra coral sin acompañamiento instrumental, duracion 3-12 min, coro mixto a no mas de 4 voces. (d) Unico compositor: no coautorias, arreglos ni transcripciones. (e) Documentacion: partitura con seudonimo, CV, DNI, autorizaciones, certificado de Propiedad Intelectual. (f) Premio: estreno por CONAMA en 2da mitad de 2026 + $2.000.000 + diploma.
+
+- **Concurso Valoracion Patrimonial 2026**: Evalua (a) Pertinencia del sitio: relevancia historica, arquitectonica y cultural. (b) Metodologia de trabajo: plan de registro, documentacion y conservacion. (c) Impacto comunitario. (d) Viabilidad tecnica y presupuestaria. (e) Antecedentes del equipo.
+
+# CRITERIOS ESPECIFICOS POR LINEA DE IBERMUSICAS (Ministerio de Cultura)
+Cuando el usuario selecciona una linea de Ibermusicas, evalua usando estos criterios:
+
+- **Circulacion de profesionales**: Evalua (a) Impacto artistico y sostenibilidad. (b) Capacidad de generar redes. (c) Actividades de formacion asociadas. (d) Pertinencia de la movilidad. (e) Antecedentes del postulante.
+
+- **Programacion musical**: Evalua (a) Calidad de la programacion. (b) Trayectoria de la institucion. (c) Impacto de las actividades de intercambio. (d) Capacidad de gestion. (e) Plan de difusion.
+
+- **Residencias para artistas e investigadores**: Evalua (a) Calidad de la propuesta creativa. (b) Pertinencia de la institucion anfitriona. (c) Duracion minima de 3 semanas. (d) Objetivos y resultados esperados. (e) Antecedentes del postulante.
+
+- **Residencias para instituciones**: Evalua (a) Trayectoria de la institucion. (b) Calidad del programa de residencia. (c) Pertinencia del profesional invitado. (d) Impacto esperado. (e) Capacidad de cofinanciamiento.
+
+- **Especializacion y perfeccionamiento**: Evalua (a) Pertinencia del plan de especializacion. (b) Trayectoria del postulante. (c) Prestigio de la institucion o maestro. (d) Aplicacion futura. (e) Claridad del cronograma y costos.
+
+- **Proyectos virtuales**: Evalua (a) Innovacion digital. (b) Alcance iberoamericano. (c) Viabilidad tecnica y presupuestaria. (d) Propuesta de valor. (e) Antecedentes del equipo.
+
+- **Promocion del repertorio**: Evalua (a) Calidad y representatividad del repertorio. (b) Estrategia de difusion. (c) Impacto esperado. (d) Antecedentes del postulante. (e) Sostenibilidad.
+
+- **Especial Mid Atlantic Arts**: Evalua (a) Pertinencia del proyecto en EE.UU. (b) Gestion de visa. (c) Proyeccion internacional. (d) Cofinanciamiento. (e) Antecedentes.
+
+- **Especial Emilia-Romagna**: Evalua (a) Vinculacion con Emilia-Romagna. (b) Calidad del intercambio. (c) Impacto bilateral. (d) Viabilidad. (e) Antecedentes.
+
+- **Especial Arts Council England**: Evalua (a) Vinculo con Inglaterra. (b) Impacto bilateral. (c) Trayectoria artistica. (d) Viabilidad. (e) Plan de actividades. Cierre 31 de julio.
+
+- **Especial CPLP**: Evalua (a) Vinculacion con paises de lengua portuguesa. (b) Calidad del intercambio. (c) Impacto en comunidad lusofona. (d) Viabilidad. (e) Antecedentes.
+
+- **Premio Brasil**: Evalua (a) Excelencia artistica. (b) Vinculacion con Brasil. (c) Trayectoria. (d) Claridad de objetivos. (e) Plan de difusion.
+
+- **Creacion de canciones**: Evalua (a) Originalidad y calidad. (b) Representatividad iberoamericana. (c) Trayectoria del compositor. (d) Factibilidad de produccion. (e) Claridad de la propuesta.
+
+- **Canciones para las infancias**: Evalua (a) Adecuacion al publico infantil. (b) Valor pedagogico. (c) Calidad musical. (d) Trayectoria en musica infantil. (e) Plan de circulacion.
+
+- **Composicion para Orquesta Sinfonica**: Evalua (a) Creatividad y calidad sinfonica. (b) Representatividad iberoamericana. (c) Viabilidad tecnica orquestal. (d) Claridad de partitura. (e) Antecedentes en el ambito sinfonico. Una obra ganadora por pais.
 
 # REGLA CRUCIAL
 NO reescribas ni corrijas el texto original del artista. Tu función es auditar y dar feedback.
