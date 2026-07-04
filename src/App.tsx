@@ -542,21 +542,9 @@ export default function App() {
   const handleEvaluate = async () => {
     if (!pdfBase64 || !destination) return;
 
-    // If INT is selected, require a specific line
-    if (destination === "INT" && !intLine) {
-      setErrorString("Si elegiste INT, necesitás seleccionar una línea de postulación específica para que evaluemos tu proyecto.");
-      return;
-    }
-    // If FNA is selected, require a specific line
-    if (destination === "FNA" && !fnaLine) {
-      setErrorString("Si elegiste FNA, necesitás seleccionar un concurso específico para que evaluemos tu proyecto.");
-      return;
-    }
-    // If Ministerio de Cultura is selected, require a specific Ibermúsicas line
-    if (destination === "Ministerio de Cultura" && !minculturaLine) {
-      setErrorString("Si elegiste Ministerio de Cultura, necesitás seleccionar una línea de Ibermúsicas específica para que evaluemos tu proyecto.");
-      return;
-    }
+    // If INT is selected, specific line is optional (general analysis available)
+    // If FNA is selected, specific line is optional
+    // If Ministerio de Cultura is selected, specific line is optional
 
     // Check if quota is exhausted
     if (quota && quota.remaining <= 0) {
@@ -579,6 +567,8 @@ export default function App() {
           pdfBase64,
           destination,
           intLine,
+          fnaLine,
+          minculturaLine,
         }),
       });
 
@@ -1091,11 +1081,40 @@ export default function App() {
                             <div className="flex items-center gap-2 mb-2">
                               <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
                               <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                                LÍNEA DE POSTULACIÓN INT
+                                LINEAS INT
                               </span>
-                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                              <span className="text-[9px] font-bold text-neutral-400 font-mono">(opcional)</span>
                             </div>
+                            <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-0 -mt-1 mb-2">
+                              Selecciona una linea especifica o usa el Analisis General del INT.
+                            </p>
                             <div className="grid grid-cols-1 gap-1.5">
+                              {/* General INT analysis button */}
+                              <div
+                                onClick={() => setIntLine("")}
+                                className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                  intLine === "" 
+                                    ? "border-[#dae122] bg-[#dae122]/15 ring-1 ring-[#dae122]" 
+                                    : "border-neutral-200 hover:border-[#dae122] hover:bg-[#dae122]/5"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                    intLine === "" ? "bg-neutral-950" : "bg-white"
+                                  }`}>
+                                    {intLine === "" && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                  </span>
+                                  <span className="font-bold text-xs text-neutral-950 font-sans">
+                                    Analisis General INT
+                                  </span>
+                                  <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto">
+                                    SIN LINEA ESPECIFICA
+                                  </span>
+                                </div>
+                                <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
+                                  Evaluacion general del proyecto segun los criterios del INT: viabilidad tecnica, desglose de puesta, presupuesto y publico objetivo, sin ajustarse a una linea de postulacion en particular.
+                                </p>
+                              </div>
                               {INT_LINES.map((line) => {
                                 const isLineSelected = intLine === line.id;
                                 return (
@@ -1148,11 +1167,40 @@ export default function App() {
                             <div className="flex items-center gap-2 mb-2">
                               <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
                               <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                                CONCURSO FNA
+                                CONCURSOS FNA
                               </span>
-                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                              <span className="text-[9px] font-bold text-neutral-400 font-mono">(opcional)</span>
                             </div>
+                            <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-0 -mt-1 mb-2">
+                              Selecciona un concurso especifico o usa el Analisis General del FNA.
+                            </p>
                             <div className="grid grid-cols-1 gap-1.5">
+                              {/* General FNA analysis button */}
+                              <div
+                                onClick={() => setFnaLine("")}
+                                className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                  fnaLine === "" 
+                                    ? "border-[#dae122] bg-[#dae122]/15 ring-1 ring-[#dae122]" 
+                                    : "border-neutral-200 hover:border-[#dae122] hover:bg-[#dae122]/5"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                    fnaLine === "" ? "bg-neutral-950" : "bg-white"
+                                  }`}>
+                                    {fnaLine === "" && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                  </span>
+                                  <span className="font-bold text-xs text-neutral-950 font-sans">
+                                    Analisis General FNA
+                                  </span>
+                                  <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto">
+                                    SIN CONCURSO ESPECIFICO
+                                  </span>
+                                </div>
+                                <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
+                                  Evaluacion general del proyecto segun los criterios del FNA: fundamentacion artistica, originalidad, trayectoria y coherencia estetica, sin ajustarse a un concurso en particular.
+                                </p>
+                              </div>
                               {FNA_LINES.map((line) => {
                                 const isLineSelected = fnaLine === line.id;
                                 return (
@@ -1205,11 +1253,40 @@ export default function App() {
                             <div className="flex items-center gap-2 mb-2">
                               <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
                               <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                                LÍNEA IBERMÚSICAS
+                                LINEAS IBERMUSICAS
                               </span>
-                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                              <span className="text-[9px] font-bold text-neutral-400 font-mono">(opcional)</span>
                             </div>
+                            <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-0 -mt-1 mb-2">
+                              Selecciona una linea especifica de Ibermusicas o usa el Analisis General.
+                            </p>
                             <div className="grid grid-cols-1 gap-1.5 max-h-[280px] overflow-y-auto pr-1">
+                              {/* General Ministerio analysis button */}
+                              <div
+                                onClick={() => setMinculturaLine("")}
+                                className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer shrink-0 ${
+                                  minculturaLine === "" 
+                                    ? "border-[#dae122] bg-[#dae122]/15 ring-1 ring-[#dae122]" 
+                                    : "border-neutral-200 hover:border-[#dae122] hover:bg-[#dae122]/5"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                    minculturaLine === "" ? "bg-neutral-950" : "bg-white"
+                                  }`}>
+                                    {minculturaLine === "" && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                  </span>
+                                  <span className="font-bold text-xs text-neutral-950 font-sans">
+                                    Analisis General Ministerio de Cultura
+                                  </span>
+                                  <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto">
+                                    SIN LINEA ESPECIFICA
+                                  </span>
+                                </div>
+                                <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
+                                  Evaluacion general del proyecto segun los criterios del Ministerio: impacto sociocomunitario, inclusion, desarrollo territorial y acceso federal, sin ajustarse a una linea de Ibermusicas en particular.
+                                </p>
+                              </div>
                               {MINCULTURA_LINES.map((line) => {
                                 const isLineSelected = minculturaLine === line.id;
                                 return (
@@ -1275,9 +1352,9 @@ export default function App() {
               <button
                 id="evaluate-btn"
                 onClick={handleEvaluate}
-                disabled={!pdfBase64 || !destination || (destination === "INT" && !intLine) || (destination === "FNA" && !fnaLine) || (destination === "Ministerio de Cultura" && !minculturaLine) || loading}
+                disabled={!pdfBase64 || !destination || loading}
                 className={`group w-full md:w-auto px-10 py-3.5 rounded-none font-mono font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-3 border transition-all ${
-                  (!pdfBase64 || !destination || (destination === "INT" && !intLine) || (destination === "FNA" && !fnaLine) || (destination === "Ministerio de Cultura" && !minculturaLine) || loading)
+                  (!pdfBase64 || !destination || loading)
                     ? "bg-neutral-100 cursor-not-allowed text-neutral-400 border-neutral-200"
                     : "bg-neutral-950 text-[#dae122] border-neutral-950 hover:bg-[#121212]/90"
                 }`}

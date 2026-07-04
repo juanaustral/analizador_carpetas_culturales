@@ -326,7 +326,7 @@ Devolvé el análisis usando exactamente esta estructura de títulos:
           },
         },
         {
-          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}${intLine ? `, línea específica: ${intLine}` : ""}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
+          text: `Auditá la siguiente carpeta cultural para presentarse ante el organismo de destino: ${destination}${intLine ? `, línea específica del INT: ${intLine}` : destination === "INT" ? ", análisis general sin línea específica" : ""}${fnaLine ? `, concurso específico del FNA: ${fnaLine}` : destination === "FNA" ? ", análisis general del FNA sin concurso específico" : ""}${minculturaLine ? `, línea específica de Ibermúsicas: ${minculturaLine}` : destination === "Ministerio de Cultura" ? ", análisis general del Ministerio sin línea de Ibermúsicas específica" : ""}. Sin introducciones ni saludos. Arrancá directo con la primera sección. Seguí estrictamente las instrucciones de rol, tono y estructura obligatoria.`,
         },
       ],
       config: {
