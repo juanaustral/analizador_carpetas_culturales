@@ -885,67 +885,181 @@ export default function App() {
                             <Info className="w-2.5 h-2.5" /> VER REQUISITOS CLAVE
                           </button>
                         </div>
+
+                        {/* INT sub-line selector (inside the card) */}
+                        {dest.id === "INT" && isSelected && (
+                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                                LÍNEA DE POSTULACIÓN INT
+                              </span>
+                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                            </div>
+                            <div className="grid grid-cols-1 gap-1.5">
+                              {INT_LINES.map((line) => {
+                                const isLineSelected = intLine === line.id;
+                                return (
+                                  <div
+                                    key={line.id}
+                                    onClick={() => setIntLine(line.id)}
+                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                      isLineSelected 
+                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                          isLineSelected ? "bg-neutral-950" : "bg-white"
+                                        }`}>
+                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                        </span>
+                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
+                                          isLineSelected ? "font-extrabold" : "font-semibold"
+                                        }`}>
+                                          {line.label}
+                                        </span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveLineDetail(line);
+                                        }}
+                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
+                                      >
+                                        <Info className="w-2 h-2" /> VER LINEA
+                                      </button>
+                                    </div>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
+                                      {line.desc}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* FNA sub-line selector (inside the card) */}
+                        {dest.id === "FNA" && isSelected && (
+                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                                CONCURSO FNA
+                              </span>
+                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                            </div>
+                            <div className="grid grid-cols-1 gap-1.5">
+                              {FNA_LINES.map((line) => {
+                                const isLineSelected = fnaLine === line.id;
+                                return (
+                                  <div
+                                    key={line.id}
+                                    onClick={() => setFnaLine(line.id)}
+                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                      isLineSelected 
+                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                          isLineSelected ? "bg-neutral-950" : "bg-white"
+                                        }`}>
+                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                        </span>
+                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
+                                          isLineSelected ? "font-extrabold" : "font-semibold"
+                                        }`}>
+                                          {line.label}
+                                        </span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveLineDetail(line);
+                                        }}
+                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
+                                      >
+                                        <Info className="w-2 h-2" /> VER LINEA
+                                      </button>
+                                    </div>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
+                                      {line.desc}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Ministerio de Cultura sub-line selector (inside the card) */}
+                        {dest.id === "Ministerio de Cultura" && isSelected && (
+                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                                LÍNEA IBERMÚSICAS
+                              </span>
+                              <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
+                            </div>
+                            <div className="grid grid-cols-1 gap-1.5 max-h-[280px] overflow-y-auto pr-1">
+                              {MINCULTURA_LINES.map((line) => {
+                                const isLineSelected = minculturaLine === line.id;
+                                return (
+                                  <div
+                                    key={line.id}
+                                    onClick={() => setMinculturaLine(line.id)}
+                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                                      isLineSelected 
+                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                                          isLineSelected ? "bg-neutral-950" : "bg-white"
+                                        }`}>
+                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                                        </span>
+                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
+                                          isLineSelected ? "font-extrabold" : "font-semibold"
+                                        }`}>
+                                          {line.label}
+                                        </span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setActiveLineDetail(line);
+                                        }}
+                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
+                                      >
+                                        <Info className="w-2 h-2" /> VER LINEA
+                                      </button>
+                                    </div>
+                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
+                                      {line.desc}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
                 </div>
-
-                {/* INT Sub-line selector */}
-                {destination === "INT" && (
-                  <div className="mt-3 space-y-2 pl-4 border-l-2 border-[#dae122]">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
-                      <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                        LÍNEA DE POSTULACIÓN INT
-                      </span>
-                      <span className="text-[9px] font-bold text-red-600 font-mono">* REQUERIDO</span>
-                    </div>
-                    <div className="grid grid-cols-1 gap-1.5">
-                      {INT_LINES.map((line) => {
-                        const isLineSelected = intLine === line.id;
-                        return (
-                          <div
-                            key={line.id}
-                            onClick={() => setIntLine(line.id)}
-                            className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
-                              isLineSelected 
-                                ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
-                                : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                  isLineSelected ? "bg-neutral-950" : "bg-white"
-                                }`}>
-                                  {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                </span>
-                                <span className={`font-bold text-xs text-neutral-950 font-sans ${
-                                  isLineSelected ? "font-extrabold" : "font-semibold"
-                                }`}>
-                                  {line.label}
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActiveLineDetail(line);
-                                }}
-                                className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
-                              >
-                                <Info className="w-2 h-2" /> VER LINEA
-                              </button>
-                            </div>
-                            <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
-                              {line.desc}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
 
