@@ -423,6 +423,8 @@ export default function App() {
   const [activeLineDetail, setActiveLineDetail] = useState<IntLineDetail | null>(null);
   const [showCriteriaModal, setShowCriteriaModal] = useState<boolean>(false);
   const [showChangelog, setShowChangelog] = useState<boolean>(false);
+  const [showLineModal, setShowLineModal] = useState<boolean>(false);
+  const [lineModalDest, setLineModalDest] = useState<Destination>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const loadingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -649,6 +651,8 @@ export default function App() {
     setPdfBase64("");
     setDestination("");
     setIntLine("");
+    setFnaLine("");
+    setMinculturaLine("");
     setErrorString("");
   };
 
@@ -688,6 +692,14 @@ export default function App() {
       } catch {}
     }
   }, []);
+
+  // Helper: get the selected line name text for display
+  const getSelectedLineName = (): string | null => {
+    if (destination === "INT" && intLine) return INT_LINES.find(l => l.id === intLine)?.label || null;
+    if (destination === "FNA" && fnaLine) return FNA_LINES.find(l => l.id === fnaLine)?.label || null;
+    if (destination === "Ministerio de Cultura" && minculturaLine) return MINCULTURA_LINES.find(l => l.id === minculturaLine)?.label || null;
+    return null;
+  };
 
   // Helper: resalta texto en **bold** con un color configurable
   const parseBoldText = (text: string, highlightClass = "bg-[#dae122]/30") => {
@@ -919,7 +931,7 @@ export default function App() {
                 01 // {file ? "✓ PDF CARGADO" : "SUBIR PDF"}
               </span>
               <span className={`px-3 py-3 font-bold transition-colors ${destination ? 'bg-[#dae122] text-neutral-900' : file ? 'bg-neutral-100 text-neutral-900' : 'bg-white text-neutral-400'}`}>
-                02 // {destination ? `✓ ${destination}${intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : ""}` : "CONVOCATORIA"}
+                02 // {destination ? `✓ ${destination}${(() => { const ln = getSelectedLineName(); return ln ? ` / ${ln}` : ""; })()}` : "CONVOCATORIA"}
               </span>
               <span className={`px-3 py-3 font-bold ${destination && file ? 'bg-neutral-950 text-[#dae122]' : 'bg-white text-neutral-400'}`}>
                 03 // DIAGNÓSTICO
@@ -1027,6 +1039,10 @@ export default function App() {
                         onClick={() => {
                           setDestination(dest.id);
                           if (dest.id !== "INT") setIntLine("");
+                          if (dest.org !== "GENERAL") {
+                            setLineModalDest(dest.id as Destination);
+                            setShowLineModal(true);
+                          }
                         }}
                         className={`w-full p-4 rounded-none border transition-all duration-200 relative bg-white flex flex-col gap-2 cursor-pointer ${
                           isSelected 
@@ -1075,261 +1091,58 @@ export default function App() {
                           </button>
                         </div>
 
-                        {/* INT sub-line selector (inside the card) */}
-                        {dest.id === "INT" && isSelected && (
-                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
-                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                                LINEAS INT
-                              </span>
-                              <span className="text-[9px] font-bold text-neutral-400 font-mono">(opcional)</span>
-                            </div>
-                            <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-0 -mt-1 mb-2">
-                              Selecciona una linea especifica o usa el Analisis General del INT.
-                            </p>
-                            <div className="grid grid-cols-1 gap-1.5">
-                              {/* General INT analysis button */}
-                              <div
-                                onClick={() => setIntLine("")}
-                                className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
-                                  intLine === "" 
-                                    ? "border-[#dae122] bg-[#dae122]/15 ring-1 ring-[#dae122]" 
-                                    : "border-neutral-200 hover:border-[#dae122] hover:bg-[#dae122]/5"
-                                }`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                    intLine === "" ? "bg-neutral-950" : "bg-white"
-                                  }`}>
-                                    {intLine === "" && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                  </span>
-                                  <span className="font-bold text-xs text-neutral-950 font-sans">
-                                    Analisis General INT
-                                  </span>
-                                  <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto">
-                                    SIN LINEA ESPECIFICA
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
-                                  Evaluacion general del proyecto segun los criterios del INT: viabilidad tecnica, desglose de puesta, presupuesto y publico objetivo, sin ajustarse a una linea de postulacion en particular.
-                                </p>
-                              </div>
-                              {INT_LINES.map((line) => {
-                                const isLineSelected = intLine === line.id;
+                        {/* Line selector section for institution cards */}
+                        {dest.org !== "GENERAL" && isSelected && (
+                          <div className="mt-3 pt-2 border-t border-neutral-100">
+                            {(() => {
+                              const selectedLineName = getSelectedLineName();
+                              if (selectedLineName) {
                                 return (
-                                  <div
-                                    key={line.id}
-                                    onClick={() => setIntLine(line.id)}
-                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
-                                      isLineSelected 
-                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
-                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
-                                    }`}
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                          isLineSelected ? "bg-neutral-950" : "bg-white"
-                                        }`}>
-                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                        </span>
-                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
-                                          isLineSelected ? "font-extrabold" : "font-semibold"
-                                        }`}>
-                                          {line.label}
-                                        </span>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setActiveLineDetail(line);
-                                        }}
-                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
-                                      >
-                                        <Info className="w-2 h-2" /> VER LINEA
-                                      </button>
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                      <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                                      <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest shrink-0">LINEA</span>
+                                      <span className="text-[10px] font-mono font-bold text-neutral-950 truncate bg-[#dae122]/15 px-2 py-0.5 border border-neutral-900">
+                                        {selectedLineName}
+                                      </span>
                                     </div>
-                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
-                                      {line.desc}
-                                    </p>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setLineModalDest(dest.id as Destination);
+                                        setShowLineModal(true);
+                                      }}
+                                      className="text-[8px] font-mono font-bold text-neutral-950 border border-neutral-950 hover:bg-neutral-50 transition-colors py-1 px-2 bg-white flex items-center gap-1 shrink-0"
+                                    >
+                                      CAMBIAR
+                                    </button>
                                   </div>
                                 );
-                              })}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* FNA sub-line selector (inside the card) */}
-                        {dest.id === "FNA" && isSelected && (
-                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
-                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                                CONCURSOS FNA
-                              </span>
-                              <span className="text-[9px] font-bold text-neutral-400 font-mono">(opcional)</span>
-                            </div>
-                            <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-0 -mt-1 mb-2">
-                              Selecciona un concurso especifico o usa el Analisis General del FNA.
-                            </p>
-                            <div className="grid grid-cols-1 gap-1.5">
-                              {/* General FNA analysis button */}
-                              <div
-                                onClick={() => setFnaLine("")}
-                                className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
-                                  fnaLine === "" 
-                                    ? "border-[#dae122] bg-[#dae122]/15 ring-1 ring-[#dae122]" 
-                                    : "border-neutral-200 hover:border-[#dae122] hover:bg-[#dae122]/5"
-                                }`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                    fnaLine === "" ? "bg-neutral-950" : "bg-white"
-                                  }`}>
-                                    {fnaLine === "" && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                  </span>
-                                  <span className="font-bold text-xs text-neutral-950 font-sans">
-                                    Analisis General FNA
-                                  </span>
-                                  <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto">
-                                    SIN CONCURSO ESPECIFICO
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
-                                  Evaluacion general del proyecto segun los criterios del FNA: fundamentacion artistica, originalidad, trayectoria y coherencia estetica, sin ajustarse a un concurso en particular.
-                                </p>
-                              </div>
-                              {FNA_LINES.map((line) => {
-                                const isLineSelected = fnaLine === line.id;
-                                return (
-                                  <div
-                                    key={line.id}
-                                    onClick={() => setFnaLine(line.id)}
-                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
-                                      isLineSelected 
-                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
-                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
-                                    }`}
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                          isLineSelected ? "bg-neutral-950" : "bg-white"
-                                        }`}>
-                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                        </span>
-                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
-                                          isLineSelected ? "font-extrabold" : "font-semibold"
-                                        }`}>
-                                          {line.label}
-                                        </span>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setActiveLineDetail(line);
-                                        }}
-                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
-                                      >
-                                        <Info className="w-2 h-2" /> VER LINEA
-                                      </button>
-                                    </div>
-                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
-                                      {line.desc}
-                                    </p>
+                              }
+                              return (
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
+                                    <span className="text-[9px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
+                                      {dest.id === "FNA" ? "CONCURSOS FNA" : dest.id === "INT" ? "LINEAS INT" : "LINEAS IBERMUSICAS"}
+                                    </span>
+                                    <span className="text-[8px] font-bold text-neutral-400 font-mono">(opcional)</span>
                                   </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Ministerio de Cultura sub-line selector (inside the card) */}
-                        {dest.id === "Ministerio de Cultura" && isSelected && (
-                          <div className="mt-3 space-y-2 pl-3 border-l-2 border-[#dae122]">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="w-2 h-2 bg-[#dae122] border border-neutral-900 shrink-0"></span>
-                              <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-widest">
-                                LINEAS IBERMUSICAS
-                              </span>
-                              <span className="text-[9px] font-bold text-neutral-400 font-mono">(opcional)</span>
-                            </div>
-                            <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-0 -mt-1 mb-2">
-                              Selecciona una linea especifica de Ibermusicas o usa el Analisis General.
-                            </p>
-                            <div className="grid grid-cols-1 gap-1.5 max-h-[280px] overflow-y-auto pr-1">
-                              {/* General Ministerio analysis button */}
-                              <div
-                                onClick={() => setMinculturaLine("")}
-                                className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer shrink-0 ${
-                                  minculturaLine === "" 
-                                    ? "border-[#dae122] bg-[#dae122]/15 ring-1 ring-[#dae122]" 
-                                    : "border-neutral-200 hover:border-[#dae122] hover:bg-[#dae122]/5"
-                                }`}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                    minculturaLine === "" ? "bg-neutral-950" : "bg-white"
-                                  }`}>
-                                    {minculturaLine === "" && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                  </span>
-                                  <span className="font-bold text-xs text-neutral-950 font-sans">
-                                    Analisis General Ministerio de Cultura
-                                  </span>
-                                  <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto">
-                                    SIN LINEA ESPECIFICA
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
-                                  Evaluacion general del proyecto segun los criterios del Ministerio: impacto sociocomunitario, inclusion, desarrollo territorial y acceso federal, sin ajustarse a una linea de Ibermusicas en particular.
-                                </p>
-                              </div>
-                              {MINCULTURA_LINES.map((line) => {
-                                const isLineSelected = minculturaLine === line.id;
-                                return (
-                                  <div
-                                    key={line.id}
-                                    onClick={() => setMinculturaLine(line.id)}
-                                    className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
-                                      isLineSelected 
-                                        ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
-                                        : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
-                                    }`}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setLineModalDest(dest.id as Destination);
+                                      setShowLineModal(true);
+                                    }}
+                                    className="text-[8px] font-mono font-bold text-neutral-950 border border-neutral-950 hover:bg-neutral-50 transition-colors py-1 px-2 bg-white flex items-center gap-1"
                                   >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex items-center gap-2">
-                                        <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
-                                          isLineSelected ? "bg-neutral-950" : "bg-white"
-                                        }`}>
-                                          {isLineSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
-                                        </span>
-                                        <span className={`font-bold text-xs text-neutral-950 font-sans ${
-                                          isLineSelected ? "font-extrabold" : "font-semibold"
-                                        }`}>
-                                          {line.label}
-                                        </span>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setActiveLineDetail(line);
-                                        }}
-                                        className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1"
-                                      >
-                                        <Info className="w-2 h-2" /> VER LINEA
-                                      </button>
-                                    </div>
-                                    <p className="text-[10px] text-neutral-500 leading-relaxed font-medium pl-5">
-                                      {line.desc}
-                                    </p>
-                                  </div>
-                                );
-                              })}
-                            </div>
+                                    SELECCIONAR LINEA
+                                  </button>
+                                </div>
+                              );
+                            })()}
                           </div>
                         )}
                       </div>
@@ -1444,7 +1257,10 @@ export default function App() {
                     REPORTE DIAGNÓSTICO GENERAL
                   </span>
                   <span className="text-[9px] uppercase font-mono font-bold tracking-widest px-2.5 py-1 bg-[#dae122] text-neutral-950 border border-neutral-950 rounded-none">
-                    DESTINO: {destination}{intLine ? ` / ${INT_LINES.find(l => l.id === intLine)?.label || intLine}` : ""}
+                    DESTINO: {destination}{(() => {
+                      const lineName = getSelectedLineName();
+                      return lineName ? ` / ${lineName}` : "";
+                    })()}
                   </span>
                 </div>
                 
@@ -1929,6 +1745,157 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setShowChangelog(false)}
+                  className="px-4 py-2 bg-neutral-950 text-white hover:bg-neutral-800 text-[10px] font-mono tracking-wider font-bold"
+                >
+                  CERRAR
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Line Selection Modal */}
+      <AnimatePresence>
+        {showLineModal && lineModalDest && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/40 backdrop-blur-xs"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white w-full max-w-xl rounded-none border border-neutral-900 flex flex-col shadow-lg max-h-[85vh]"
+            >
+              <div className="bg-neutral-950 border-b border-neutral-900 p-4 text-[#dae122] flex justify-between items-center shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <span className="w-2 h-2 bg-[#dae122] shrink-0"></span>
+                  <h3 className="font-mono font-bold text-xs uppercase tracking-widest text-[#dae122]">
+                    {lineModalDest === "FNA" ? "CONCURSOS FNA" : lineModalDest === "INT" ? "LINEAS INT" : "LINEAS IBERMUSICAS"} — SELECCIONAR LINEA
+                  </h3>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setShowLineModal(false)}
+                  className="text-neutral-400 hover:text-white transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              <div className="p-6 space-y-4 flex-1 overflow-y-auto select-text">
+                {/* "ANALISIS GENERAL" option */}
+                <div
+                  onClick={() => {
+                    if (lineModalDest === "INT") setIntLine("");
+                    else if (lineModalDest === "FNA") setFnaLine("");
+                    else if (lineModalDest === "Ministerio de Cultura") setMinculturaLine("");
+                    setShowLineModal(false);
+                  }}
+                  className="w-full p-4 rounded-none border-2 border-[#dae122] bg-[#dae122]/10 transition-all duration-200 cursor-pointer hover:bg-[#dae122]/20 flex flex-col gap-1.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 bg-neutral-950 border border-neutral-900 flex items-center justify-center shrink-0">
+                      <span className="w-1.5 h-1.5 bg-[#dae122]"></span>
+                    </span>
+                    <span className="font-extrabold text-xs text-neutral-950 font-sans uppercase tracking-tight">
+                      ANALISIS GENERAL
+                    </span>
+                    <span className="text-[8px] font-mono text-neutral-500 bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 ml-auto shrink-0">
+                      SIN LINEA ESPECIFICA
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-neutral-600 leading-relaxed font-medium pl-5">
+                    Evaluacion general del proyecto segun los criterios del organismo, sin ajustarse a una linea de postulacion en particular.
+                  </p>
+                </div>
+
+                {/* Divider */}
+                <div className="flex items-center gap-2">
+                  <span className="h-px bg-neutral-200 flex-1"></span>
+                  <span className="text-[9px] font-mono font-bold text-neutral-400 tracking-widest shrink-0">
+                    {(() => {
+                      if (lineModalDest === "INT") return "LINEAS ESPECIFICAS (" + INT_LINES.length + ")";
+                      if (lineModalDest === "FNA") return "CONCURSOS (" + FNA_LINES.length + ")";
+                      if (lineModalDest === "Ministerio de Cultura") return "LINEAS IBERMUSICAS (" + MINCULTURA_LINES.length + ")";
+                      return "";
+                    })()}
+                  </span>
+                  <span className="h-px bg-neutral-200 flex-1"></span>
+                </div>
+
+                {/* Specific lines grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {(lineModalDest === "INT" ? INT_LINES : lineModalDest === "FNA" ? FNA_LINES : lineModalDest === "Ministerio de Cultura" ? MINCULTURA_LINES : []).map((line) => {
+                    const isSelected = 
+                      (lineModalDest === "INT" && intLine === line.id) ||
+                      (lineModalDest === "FNA" && fnaLine === line.id) ||
+                      (lineModalDest === "Ministerio de Cultura" && minculturaLine === line.id);
+                    return (
+                      <div
+                        key={line.id}
+                        onClick={() => {
+                          if (lineModalDest === "INT") setIntLine(line.id as IntLine);
+                          else if (lineModalDest === "FNA") setFnaLine(line.id as FnaLine);
+                          else if (lineModalDest === "Ministerio de Cultura") setMinculturaLine(line.id as MinculturaLine);
+                          setShowLineModal(false);
+                        }}
+                        className={`w-full p-3 rounded-none border transition-all duration-200 bg-white flex flex-col gap-1.5 cursor-pointer ${
+                          isSelected 
+                            ? "border-neutral-900 bg-[#dae122]/10 ring-1 ring-neutral-900" 
+                            : "border-neutral-200 hover:border-neutral-900 hover:bg-neutral-50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-1">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span className={`w-3 h-3 rounded-none border border-neutral-950 flex items-center justify-center shrink-0 ${
+                              isSelected ? "bg-neutral-950" : "bg-white"
+                            }`}>
+                              {isSelected && <span className="w-1.5 h-1.5 bg-[#dae122]"></span>}
+                            </span>
+                            <span className={`text-xs text-neutral-950 font-sans truncate ${
+                              isSelected ? "font-extrabold" : "font-semibold"
+                            }`}>
+                              {line.label}
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveLineDetail(line);
+                            }}
+                            className="text-[8px] font-mono font-bold text-neutral-500 hover:text-neutral-950 border border-neutral-200 hover:border-neutral-950 transition-colors py-0.5 px-2 bg-white flex items-center gap-1 shrink-0"
+                          >
+                            <Info className="w-2 h-2" /> VER LINEA
+                          </button>
+                        </div>
+                        <p className="text-[9px] text-neutral-500 leading-relaxed font-medium pl-5 line-clamp-2">
+                          {line.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="bg-neutral-50 p-4 border-t border-neutral-200 flex justify-between items-center shrink-0">
+                <span className="text-[9px] font-mono text-neutral-400">
+                  {(() => {
+                    if (lineModalDest === "INT") return INT_LINES.length + " lineas disponibles";
+                    if (lineModalDest === "FNA") return FNA_LINES.length + " concursos disponibles";
+                    if (lineModalDest === "Ministerio de Cultura") return MINCULTURA_LINES.length + " lineas disponibles";
+                    return "";
+                  })()}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowLineModal(false)}
                   className="px-4 py-2 bg-neutral-950 text-white hover:bg-neutral-800 text-[10px] font-mono tracking-wider font-bold"
                 >
                   CERRAR
